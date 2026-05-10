@@ -123,9 +123,19 @@ app.post("/report", (req, res) => {
     res.render("report.ejs", { success: "Your report was successfully sent to our team!<br>You will receive an email when we review the post." })
 })
 
+// Bonus pages
 // Pages on the homepage
-app.get("/rules", (req, res) => res.redirect("/post/" + config.urls.rules));
-app.get("/formatting", (req, res) => res.redirect("/post/" + config.urls.formatting));
+// In config.json's urls object, each key is a path and the value the ID of the post it should redirect to.
+// Example: { "test": "ca04eaab-ffef-4515-a820-32368c626ac5" } redirects /test to /post/ca04eaab-ffef-4515-a820-32368c626ac5
+for (const [key, value] of Object.entries(config.urls)) {
+    app.get("/" + key, (req, res) => res.redirect("/post/" + value));
+}
+
+// Staff login URL.
+app.get(process.env.STAFF_LOGIN_URL, (req, res) => {
+    res.send("hello admin!");
+    // finish this. Maybe use express-sessions
+})
 
 app.listen(8000, () => {
     initDB(db);
