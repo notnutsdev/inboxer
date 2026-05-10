@@ -12,7 +12,7 @@
 
     <% if (locals.error) { %>
         <div class="wrapper" style="margin-top: 25px;">
-            <div id="error">
+            <div id="error" class="pixel-container">
                 <div class="before">
                     <span style="font-size: 3rem;">;(</span><br>
                     <%= error %>
@@ -21,6 +21,13 @@
             </div>
         </div>
     <% } %>
+
+    <div id="wrapper">
+        <div id="post_id_copy_notification" class="pixel-container" style="max-width: 200px;">
+            <div class="before" style="background-color: rgb(255, 255, 255);"><img src="/img/check.png" alt="check" height="15px"> Copied post ID!</div>
+            <div class="after"></div>
+        </div>
+    </div>
 
     <% if (locals.content) { %>
         <div id="post_data">
@@ -40,6 +47,7 @@
 
     <!--- scripts -->
     <script src="/js/redirect_check.js" defer></script>
+    <script src="/js/copy.js" defer></script>
 
     <%- include("base/footer") %>
 </body>

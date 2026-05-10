@@ -11,7 +11,7 @@ body {
     font-family: "Jersey 10", sans-serif;
 }
 
-input:hover, textarea:hover, button:hover, a:hover {
+*:hover {
     cursor: url(/img/cursor.png), auto;
 }
 
@@ -233,6 +233,10 @@ textarea {
 	font-family: "Pixelify Sans", sans-serif;
 }
 
+#content img {
+	max-width: 100%;
+}
+
 /* Overlay */
 #overlay {
 	position: fixed;
@@ -281,16 +285,30 @@ textarea {
 }
 
 #error .before {
+	background-color: rgb(250, 128, 128);
+}
+
+#success {
+	max-width: 500px;
+	word-wrap: break-word;
+	padding: 2px 5px;
+	text-align: center;
+}
+
+#success .before {
+	background-color: rgb(173, 250, 128);
+}
+
+.pixel-container .before {
 	padding: 5px 15px;
     clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
     box-shadow: 10px 10px 10px #000;
     border: none;
-    background-color: rgb(250, 128, 128);
 	position: relative;
 	z-index: 1;
 }
 
-#error .after {
+.pixel-container .after {
 	padding: 5px 15px;
     clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
     box-shadow: 10px 10px 10px #000;
@@ -331,4 +349,42 @@ textarea {
 	100% {
 		background-position: 0% 50%, 0%;
 	}
+}
+
+#post_id_copy_notification {
+	position: absolute;
+	top: 10%;
+	left: 50%;
+	transform: translateX(-50%);
+	display: none;
+}
+
+#report form {
+	margin-top: 50px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	width: 100%;
+}
+
+#report {
+	display: flex;
+	justify-content: center;
+	max-width: 550px;
+	margin: 0px 5px;
+}
+
+#report textarea {
+	width: 95%;
+}
+
+/* Popover related */
+.popover_container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 10px;
+	clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
+	background-color: #000;
+	color: white;
 }

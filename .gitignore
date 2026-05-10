@@ -1,4 +1,9 @@
+# Nodejs related
 node_modules
 
 # Database file
 db/database.db
+
+# Secrets
+.env
+production.env

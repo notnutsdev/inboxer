@@ -1,12 +1,23 @@
 const express = require("express");
 const app = express();
+
 const { DatabaseSync } = require("node:sqlite");
 const db = new DatabaseSync("./db/database.db");
 const initDB = require("./utils/initdb");
+
 const showdown = require("showdown");
-const converter = new showdown.Converter();
+const md_ext = require("./utils/md_extensions");
+const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, extensions: [ md_ext.hrTag ] });
+
 const validator = require("validator");
+
 const config = require("./config.json");
+const banned_words = require("./banned_words.json");
+
+const { Webhook, MessageBuilder } = require("discord-webhook-node");
+
+// Loading environment variables
+process.loadEnvFile("./.env");
 
 // Setting ejs as our view engine
 app.set("view engine", "ejs");
@@ -37,6 +48,13 @@ app.post("/create", (req, res) => {
 
     if (username.length > 100) return res.render("create.ejs", { error: "Username too long." });
 
+    for (let i = 0; i< banned_words.length; i++) {
+        const word = banned_words[i];
+        if (content.includes(word)) {
+            return res.render("create.ejs", { error: "Your post contains banned words." });
+        }
+    }
+
     const uuid = crypto.randomUUID();
 
     content = converter.makeHtml(validator.escape(content));
@@ -63,6 +81,46 @@ app.get('/post/:uid', (req, res) => {
 app.get("/random", (req, res) => {
     const post = db.prepare("SELECT * FROM posts ORDER BY RANDOM() LIMIT 1;").all()[0];
     res.redirect("/post/" + post.uid);
+})
+
+app.get("/report", (req, res) => {
+    res.render("report.ejs");
+})
+
+app.post("/report", (req, res) => {
+    const post_id = req.body.post_id;
+    const email = req.body.email;
+    const message = req.body.message;
+
+    // Check provided data
+    if (!post_id || !email || !message) return res.render("report.ejs", { error: "Please fill out all form fields." });
+    if (!validator.isEmail(email)) return res.render("report.ejs", { error: "Invalid email address." });
+    if (5 > message.length || message.length > 3000) return res.render("report.ejs", { error: "Your message must be between 5 and 3000 characters." })
+    
+    // Check that the given post ID exists in the database to prevent useless reports.
+    const post = db.prepare(`SELECT * FROM posts WHERE uid = '${post_id}';`).all();
+
+    if (post.length <= 0) return res.render("report.ejs", { error: "Post with this ID doesn't exist in our records." });
+
+    const webhooks = process.env.DISCORD_WEBHOOKS.split(",");
+    const hook_url = webhooks[Math.floor(Math.random() * webhooks.length)]; // Get a random webhook URL.
+
+    // Sending the message with the webhook
+    const hook = new Webhook(hook_url);
+    const embed = new MessageBuilder()
+    .setColor("#fff")
+    .setTitle("New report")
+    .setAuthor(`Sent by: ${email}`)
+    .addField("Post ID", `\`${post_id}\``)
+    .addField("Post link", `[click here](${req.protocol}://${req.hostname}/post/${post_id})`)
+    .addField("Post author username:", `\`${post[0].username}\``)
+    .addField("Report message", `\`\`\`${message}\`\`\``)
+    .setTimestamp();
+
+    hook.send(embed)
+    .catch(() => res.render("report.ejs", { error: "An error occured while sending your request. Our systems might be overwelhmed. Please try again later or contact us on Discord." }));
+
+    res.render("report.ejs", { success: "Your report was successfully sent to our team!<br>You will receive an email when we review the post." })
 })
 
 // Pages on the homepage

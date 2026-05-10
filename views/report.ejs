@@ -1,0 +1,53 @@
+<%- include("base/head", { title: "Report" }) %>
+<body>
+    <%- include("base/nav") %>
+
+    <%# Error message %>
+    <% if (locals.error) { %>
+        <div class="wrapper" style="margin-top: 25px;">
+            <div id="error" class="pixel-container">
+                <div class="before">
+                    <span style="font-size: 3rem;">;(</span><br>
+                    <%= error %>
+                </div>
+                <div class="after"></div>
+            </div>
+        </div>
+    <% } %>
+
+    <%# Success message %>
+    <% if (locals.success) { %>
+        <div class="wrapper" style="margin-top: 25px;">
+            <div id="success" class="pixel-container">
+                <div class="before">
+                    <div><img src="/img/check.png" alt="" height="30px" width="30px"></div>
+                    <%- success %>
+                </div>
+                <div class="after"></div>
+            </div>
+        </div>
+    <% } %>
+
+    <div class="wrapper">
+        <div id="report">
+            <form method="post">
+                <label for="report_post_id"><span class="popover" popover_content="The ID of the post, found when viewing it. <br><img src='/img/post_id_example.png'>"><img src="/img/questionmark.png" alt="questionmark" height="15px" style="opacity: 0.5"></span> ID of the post: </label>
+                <input type="text" name="post_id" id="report_post_id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+            
+                <label for="email">Your email: </label>
+                <input type="email" name="email" id="email" placeholder="your@email.com">
+
+                <label for="details">Message: </label>
+                <textarea name="message" id="details" placeholder="Additional details..."></textarea>
+            
+                <button type="submit" class="btn">Send report</button>
+            </form>
+        </div>
+    </div>
+
+    <!--- scripts -->
+    <script src="/js/popover.js" defer></script>
+
+    <%- include("base/footer") %>
+</body>
+</html>
