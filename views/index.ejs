@@ -1,0 +1,67 @@
+<%- include("base/head", { title: "SiteName" }) %>
+<body>
+    <%- include("base/nav") %>
+
+    <div style="text-align: center; margin-top: 25px">
+        <a href="/create"><button class="btn" style="max-width: 200px; padding: 0px 5px;">Create a post</button></a>
+    </div>
+
+    <div style="display: flex; justify-content: center;">
+    <div style="display: flex; flex-direction: column; align-items: start; gap: 25px; padding: 20px 5px; padding-top: 10px;">
+        
+        <div id="posts">
+            <h2>Random posts</h2>
+
+            <% for (let i = 0; i < posts.length; i++) { %>
+                <% const elem = posts[i]; %>
+                <div>
+                    > <a href="/post/<%- elem.uid %>" class="regular"><%- elem.uid %></a> by <% if (elem.permissions >= 1) { %><%- elem.username %><% } else { %><%= elem.username %><% } %>
+                </div>
+            <% } %>
+        </div>
+
+        <div>
+            <h2>How does this work?</h2>
+
+            <div id="about">
+                <div class="about_item">
+                    <img src="/img/write.png" height="50px">
+                    <div>
+                        <h3>Write stuff.</h3>
+                        Write anything you want, as long as it respects the <a href="#" class="regular">site rules.</a>
+                    </div>
+                </div>
+
+                <div class="about_item">
+                    <img src="/img/share.png" height="50px">
+                    <div>
+                        <h3>Share it.</h3>
+                        Share your masterpiece with your friends, family and collegues. It stays here forever.
+                    </div>
+                </div>
+
+                <div class="about_item">
+                    <img src="/img/earth.png" height="50px">
+                    <div>
+                        <h3>Discover.</h3>
+                        Every post is public. Users can stumble upon your post randomly with the "Random" button at the top.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="useful_links">
+            <h2>Useful links</h2>
+
+            <div style="display: flex; flex-direction: column; align-items: start;">
+                <span>> <a href="/formatting" class="regular">Format your posts</a></span>
+                <span>> <a href="/rules" class="regular">Site rules</a></span>
+                <span>> <a href="#" class="regular">GitHub</a></span>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <%- include("base/footer") %>
+</body>
+</html>

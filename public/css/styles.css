@@ -1,0 +1,334 @@
+:root {
+	--pixel-bg: rgb(255, 165, 91); /* Inner background color */
+	--pixel-border: black; /* Inner border color: */
+	--pixel-border-2: white; /* Middle border color: */
+	--pixel-border-3: var(--pixel-border); /* Outer border color */
+	--pixel: .125rem; /* Pixel size */
+}
+
+body {
+    cursor: url(/img/cursor.png), auto;
+    font-family: "Jersey 10", sans-serif;
+}
+
+input:hover, textarea:hover, button:hover, a:hover {
+    cursor: url(/img/cursor.png), auto;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a.regular {
+	text-decoration: underline;
+}
+
+hr {
+	border-top: solid var(--pixel) rgb(0, 0, 0);
+	border-bottom: solid var(--pixel) rgb(255, 255, 255);
+	border-left: none;
+	border-right: none;
+}
+
+form#create {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+form#create button {
+    margin-top: 20px
+}
+
+input, textarea {
+    padding: 5px 15px;
+    clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
+    box-shadow: 10px 10px 10px #000;
+    border: none;
+}
+
+textarea {
+    height: 500px;
+    width: 80%
+}
+
+/* Containers */
+.container {
+    max-width: 1100px;
+    margin: 2px 15px;
+}
+
+.form-container {
+    margin-top: 50px;
+}
+
+/* Pixel stuff */
+/* Taken from https://codepen.io/makewistful/pen/ezOGJK */
+.pixel-border {
+	background: var(--pixel-bg);
+	box-shadow:
+		
+	/* Inner Background Color */
+		0 calc(var(--pixel) * -3) 0 calc(var(--pixel) * -1) var(--pixel-bg),
+		0 calc(var(--pixel) * 3) 0 calc(var(--pixel) * -1) var(--pixel-bg),
+		0 calc(var(--pixel) * -6) 0 calc(var(--pixel) * -2) var(--pixel-bg),
+		0 calc(var(--pixel) * 6) 0 calc(var(--pixel) * -2) var(--pixel-bg),
+		0 calc(var(--pixel) * -9) 0 calc(var(--pixel) * -4) var(--pixel-bg),
+		0 calc(var(--pixel) * 9) 0 calc(var(--pixel) * -4) var(--pixel-bg),
+		0 calc(var(--pixel) * -12) 0 calc(var(--pixel) * -6) var(--pixel-bg),
+		0 calc(var(--pixel) * 12) 0 calc(var(--pixel) * -6) var(--pixel-bg),
+		
+	/* Pixel Border Layer 1 */
+		calc(var(--pixel) * -1) 0 0 0 var(--pixel-border),
+		var(--pixel) 0 0 0 var(--pixel-border),
+		0 calc(var(--pixel) * -2) 0 0 var(--pixel-border),
+		0 calc(var(--pixel) * 2) 0 0 var(--pixel-border),
+		0 calc(var(--pixel) * -5) 0 calc(var(--pixel) * -1) var(--pixel-border),
+		0 calc(var(--pixel) * 5) 0 calc(var(--pixel) * -1) var(--pixel-border),
+		0 calc(var(--pixel) * -7) 0 calc(var(--pixel) * -2) var(--pixel-border),
+		0 calc(var(--pixel) * 7) 0 calc(var(--pixel) * -2) var(--pixel-border),
+		0 calc(var(--pixel) * -10) 0 calc(var(--pixel) * -4) var(--pixel-border),
+		0 calc(var(--pixel) * 10) 0 calc(var(--pixel) * -4) var(--pixel-border),
+		0 calc(var(--pixel) * -13) 0 calc(var(--pixel) * -6) var(--pixel-border),
+		0 calc(var(--pixel) * 13) 0 calc(var(--pixel) * -6) var(--pixel-border),
+		
+	/* Pixel Border Layer 2 */
+		calc(var(--pixel) * -2) 0 0 0 var(--pixel-border-2),
+		calc(var(--pixel) * 2) 0 0 0 var(--pixel-border-2),
+		0 calc(var(--pixel) * -1) 0 var(--pixel) var(--pixel-border-2), 
+		0 var(--pixel) 0 var(--pixel) var(--pixel-border-2),
+		0 calc(var(--pixel) * -4) 0 0 var(--pixel-border-2),
+		0 calc(var(--pixel) * 4) 0 0 var(--pixel-border-2),
+		0 calc(var(--pixel) * -6) 0 calc(var(--pixel) * -1) var(--pixel-border-2),
+		0 calc(var(--pixel) * 6) 0 calc(var(--pixel) * -1) var(--pixel-border-2),
+		0 calc(var(--pixel) * -8) 0 calc(var(--pixel) * -2) var(--pixel-border-2),
+		0 calc(var(--pixel) * 8) 0 calc(var(--pixel) * -2) var(--pixel-border-2),
+		0 calc(var(--pixel) * -11) 0 calc(var(--pixel) * -4) var(--pixel-border-2),
+		0 calc(var(--pixel) * 11) 0 calc(var(--pixel) * -4) var(--pixel-border-2),
+		0 calc(var(--pixel) * -14) 0 calc(var(--pixel) * -6) var(--pixel-border-2),
+		0 calc(var(--pixel) * 14) 0 calc(var(--pixel) * -6) var(--pixel-border-2),
+		
+	/* Border Layer 3: --pixel-border-3 */
+		calc(var(--pixel) * -3) 0 0 0 var(--pixel-border-3),
+		calc(var(--pixel) * 3) 0 0 0 var(--pixel-border-3),
+		0 0 0 calc(var(--pixel) * 2) var(--pixel-border-3),
+		0 calc(var(--pixel) * -3) 0 var(--pixel) var(--pixel-border-3),
+		0 calc(var(--pixel) * 3) 0 var(--pixel) var(--pixel-border-3),
+		0 calc(var(--pixel) * -5) 0 0 var(--pixel-border-3),
+		0 calc(var(--pixel) * 5) 0 0 var(--pixel-border-3),
+		0 calc(var(--pixel) * -7) 0 calc(var(--pixel) * -1) var(--pixel-border-3),
+		0 calc(var(--pixel) * 7) 0 calc(var(--pixel) * -1) var(--pixel-border-3),
+		0 calc(var(--pixel) * -9) 0 calc(var(--pixel) * -2) var(--pixel-border-3), 
+		0 calc(var(--pixel) * 9) 0 calc(var(--pixel) * -2) var(--pixel-border-3),
+		0 calc(var(--pixel) * -12) 0 calc(var(--pixel) * -4) var(--pixel-border-3), 
+		0 calc(var(--pixel) * 12) 0 calc(var(--pixel) * -4) var(--pixel-border-3),
+		0 calc(var(--pixel) * -15) 0 calc(var(--pixel) * -6) var(--pixel-border-3), 
+		0 calc(var(--pixel) * 15) 0 calc(var(--pixel) * -6) var(--pixel-border-3);
+}
+
+/* Buttons */
+.btn {
+    font-family: "Jersey 10", sans-serif;
+    font-weight: 100;
+    font-size: 120%;
+    background-color: var(--secondary-color);
+    padding: 2px 10px;
+
+    border: none;
+    border-bottom: solid 4px #000;
+    border-left: solid 1px #0000008a;
+    border-right: solid 1px #0000008a;
+
+    transition: all 0.1s ease-in-out;
+
+    clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
+
+    &:hover {
+        transform: translateY(3px);
+        border-bottom: solid 1px #000;
+    }
+}
+
+.btn-danger {
+	background-color: rgb(235, 69, 69);
+}
+
+.btn-close {
+	background-color: #a7a7a7;
+}
+
+/* Wrappers */
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.wrapper > * {
+	width: 100%;
+}
+
+#nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#nav > .links {
+    display: flex;
+    font-size: 110%;
+    color: #000000b4;
+    text-decoration: underline;
+    gap: 20px;
+}
+
+#nav > .links > * {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#nav > .links > * svg path {
+    fill: var(--secondary-color)
+}
+
+.text-center {
+    text-align: center;
+}
+
+#post_id {
+    margin-top: 30px;
+}
+
+/* Same as an input or textarea, but for divs */
+.pixel-box {
+    padding: 5px 15px;
+    clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
+    box-shadow: 10px 10px 10px #000;
+    border: none;
+    background-color: white;
+}
+
+.secondary-text {
+    color: #000000c9;
+}
+
+#post_data {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Page view stying */
+#content a {
+	text-decoration: underline;
+}
+
+#content a, h1, h2, h3, h4, h5, h6 {
+	font-family: "Jersey 10", sans-serif;
+}
+
+#content p {
+	font-family: "Pixelify Sans", sans-serif;
+}
+
+/* Overlay */
+#overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: none;
+	background-color: #00000046;
+	height: 100vh;
+	width: 100vw;
+	z-index: 999;
+}
+
+#overlay_inner {
+	background-color: white;
+	color: black;
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translate(-50%);
+}
+
+/* About section */
+#about {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	max-width: 500px;
+	word-wrap: break-word;
+}
+
+.about_item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.about_item h3 {
+	margin: 0px;
+}
+
+#error {
+	max-width: 500px;
+	word-wrap: break-word;
+	padding: 2px 5px;
+	text-align: center;
+}
+
+#error .before {
+	padding: 5px 15px;
+    clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
+    box-shadow: 10px 10px 10px #000;
+    border: none;
+    background-color: rgb(250, 128, 128);
+	position: relative;
+	z-index: 1;
+}
+
+#error .after {
+	padding: 5px 15px;
+    clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
+    box-shadow: 10px 10px 10px #000;
+    border: none;
+    background-color: rgb(0, 0, 0);
+	z-index: 0;
+	position: relative;
+	transform: translateY(-8px);
+}
+
+/* Fancy usernames */
+.admin_username {
+	background-image: linear-gradient(-45deg, rgb(109, 2, 248) 0%, rgb(239, 3, 235) 10%, rgb(239, 3, 235) 20%, rgb(109, 2, 248) 30%, rgb(109, 2, 248) 40%, rgb(239, 3, 235) 50%, rgb(239, 3, 235) 60%, rgb(109, 2, 248) 70%, rgb(109, 2, 248) 80%, rgb(239, 3, 235) 90%, rgb(239, 3, 235) 100%);
+	-webkit-text-fill-color: transparent;
+  	-webkit-background-clip: text, border-box;
+	background-clip: text, border-box;
+	position: relative;
+	
+	font-family: "Pixelify Sans", sans-serif;
+	font-weight: 800;
+	font-size: 120%;
+	-webkit-text-stroke: .05rem #000;
+	transition: 3s;
+	animation: adminAnim 3.5s cubic-bezier(0.4, 0, 1, 1) 0s infinite running;
+}
+
+.admin_tag {
+	color: red
+}
+
+@keyframes adminAnim {
+	0% {
+		background-position: 0% 50%, 0%;
+	}
+	50% {
+		background-position: 100% 50%, 0%;
+	}
+	100% {
+		background-position: 0% 50%, 0%;
+	}
+}

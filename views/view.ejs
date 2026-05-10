@@ -1,0 +1,46 @@
+<% if (locals.error) { %>
+    <%- include("base/head", { title: "Error" }) %>
+<% } else { %>
+    <%- include("base/head", { title: `Viewing post: ${uid}` }) %>
+<% } %>
+
+<body>
+    <%- include("base/nav") %>
+
+    <!--- overlay used when opening links -->
+    <div id="overlay"></div>
+
+    <% if (locals.error) { %>
+        <div class="wrapper" style="margin-top: 25px;">
+            <div id="error">
+                <div class="before">
+                    <span style="font-size: 3rem;">;(</span><br>
+                    <%= error %>
+                </div>
+                <div class="after"></div>
+            </div>
+        </div>
+    <% } %>
+
+    <% if (locals.content) { %>
+        <div id="post_data">
+            <div id="post_id" class="text-center">Post ID: <span class="pixel-box"><%= uid %></span></div>
+
+            <div id="username" class="text-center">Posted by: <span class="pixel-box"><% if (permissions >= 1) { %><%- username %><% } else { %><%= username %><% } %></span></div>
+            
+            <div class="wrapper">
+                <div class="container pixel-border" style="margin-top: 23px; padding: 0px 10px">
+                    <div id="content">
+                        <%- content %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <!--- scripts -->
+    <script src="/js/redirect_check.js" defer></script>
+
+    <%- include("base/footer") %>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "testpastejs",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "remark-html": "^16.0.1",
+    "sanitize": "^2.1.2",
+    "showdown": "^2.1.0",
+    "unified": "^11.0.5",
+    "validator": "^13.15.35"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
