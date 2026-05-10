@@ -3,18 +3,7 @@
 <body>
     <%- include("base/nav") %>
 
-    <%# Error message %>
-    <% if (locals.error) { %>
-        <div class="wrapper" style="margin-top: 25px;">
-            <div id="error" class="pixel-container">
-                <div class="before">
-                    <span style="font-size: 3rem;">;(</span><br>
-                    <%= error %>
-                </div>
-                <div class="after"></div>
-            </div>
-        </div>
-    <% } %>
+    <%- include('base/error') %>
 
     <div class="wrapper">
         <div class="container pixel-border form-container text-center">

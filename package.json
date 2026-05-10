@@ -13,6 +13,7 @@
     "discord-webhook-node": "^1.1.8",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "remark-html": "^16.0.1",
     "sanitize": "^2.1.2",
     "showdown": "^2.1.0",

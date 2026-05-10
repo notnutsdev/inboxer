@@ -10,17 +10,7 @@
     <!--- overlay used when opening links -->
     <div id="overlay"></div>
 
-    <% if (locals.error) { %>
-        <div class="wrapper" style="margin-top: 25px;">
-            <div id="error" class="pixel-container">
-                <div class="before">
-                    <span style="font-size: 3rem;">;(</span><br>
-                    <%= error %>
-                </div>
-                <div class="after"></div>
-            </div>
-        </div>
-    <% } %>
+    <%- include('base/error') %>
 
     <div id="wrapper">
         <div id="post_id_copy_notification" class="pixel-container" style="max-width: 200px;">
@@ -35,6 +25,13 @@
 
             <div id="username" class="text-center">Posted by: <span class="pixel-box"><% if (permissions >= 1) { %><%- username %><% } else { %><%= username %><% } %></span></div>
             
+            <%# show the delete button for staff members %>
+            <% if (locals.isStaff == true) { %>
+                <div style="display: flex; justify-content: center;">
+                    <a href="/delete/<%= uid %>"><button class="btn btn-danger">Delete post</button></a>
+                </div>
+            <% } %>
+
             <div class="wrapper">
                 <div class="container pixel-border" style="margin-top: 23px; padding: 0px 10px">
                     <div id="content">
