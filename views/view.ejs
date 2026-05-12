@@ -43,9 +43,14 @@
     <% } %>
 
     <!--- scripts -->
+    <script src="https://unpkg.com/@tensorflow/tfjs@4.22.0" type="text/javascript"></script>
+    <script src="/libraries/nsfwjs.model.min.js" defer type="module"></script>
+    <script src="/libraries/nsfwjs.min.js" defer type="module"></script>
+    <script src="/libraries/nsfwjs.group1-shard1of1.min.js" defer type="module"></script>
+
     <script src="/js/redirect_check.js" defer></script>
     <script src="/js/copy.js" defer></script>
-    <script src="/js/sploiler.js" defer></script>
+    <script src="/js/spoiler.js" defer type="module"></script>
 
     <%- include("base/footer") %>
 </body>

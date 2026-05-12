@@ -215,6 +215,15 @@ app.get("/delete/:uid", (req, res) => {
     return res.render("blank.ejs", { success: "Deleted post with ID: " + uid });
 })
 
+// Route to load libraries
+app.get("/libraries/:file", (req, res) => {
+    const fp = config.libraries[req.params.file];
+
+    if (!fp) return res.status(404).send("404 not found");
+
+    res.sendFile(__dirname + fp)
+})
+
 app.listen(8000, () => {
     initDB(db);
     console.log('Ready on port: 8000');

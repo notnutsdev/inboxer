@@ -1,7 +1,14 @@
 {
     "site_name": "Inboxer",
+
     "urls": {
         "formatting": "ca04eaab-ffef-4515-a820-32368c626ac5",
         "rules": "64a19bef-7de5-4e21-a4e3-f1e576d0a3ed"
+    },
+
+    "libraries": {
+        "nsfwjs.min.js": "/node_modules/nsfwjs/dist/browser/nsfwjs.min.js",
+        "nsfwjs.model.min.js": "/node_modules/nsfwjs/dist/models/mobilenet_v2/model.min.js",
+        "nsfwjs.group1-shard1of1.min.js": "/node_modules/nsfwjs/dist/models/mobilenet_v2/group1-shard1of1.min.js"
     }
 }
