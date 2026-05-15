@@ -95,7 +95,7 @@ app.get("/random", (req, res) => {
 })
 
 app.get("/report", (req, res) => {
-    res.render("report.ejs");
+    res.render("report.ejs", (req.query.post_id) ? { post_id: req.query.post_id } : {}); // If a post_id was provided in the query parameters, fill it in the post_id field
 })
 
 app.post("/report", (req, res) => {

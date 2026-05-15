@@ -9,7 +9,7 @@
         <div id="report">
             <form method="post">
                 <label for="report_post_id"><span class="popover" popover_content="The ID of the post, found when viewing it. <br><img src='/img/post_id_example.png'>"><img src="/img/questionmark.png" alt="questionmark" height="15px" style="opacity: 0.5"></span> ID of the post: </label>
-                <input type="text" name="post_id" id="report_post_id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                <input type="text" name="post_id" id="report_post_id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" <% if (locals.post_id) { %>value="<%= post_id %>"<% } %>>
             
                 <label for="email">Your email: </label>
                 <input type="email" name="email" id="email" placeholder="your@email.com">
