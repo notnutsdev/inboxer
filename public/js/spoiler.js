@@ -101,13 +101,15 @@ let model;
 if (images.length > 0) {
     setImgCORS();
 
-    nsfwjs.load("MobileNetV2").then(m => {
-        model = m;
-        console.log("Loaded model.");
+    document.addEventListener("DOMContentLoaded", () => {
+        nsfwjs.load("MobileNetV2").then(m => {
+            model = m;
+            console.log("Loaded model.");
 
-        
-        checkAllImages();
+            
+            checkAllImages();
 
-        document.onscroll = e => checkAllImages();
+            document.onscroll = e => checkAllImages();
+        });
     });
 };
