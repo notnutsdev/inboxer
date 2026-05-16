@@ -6,6 +6,10 @@
 	--pixel: .125rem; /* Pixel size */
 }
 
+html {
+	background-color: rgb(255 207 167);
+}
+
 body {
     cursor: url(/img/cursor.png), auto;
     font-family: "Jersey 10", sans-serif;

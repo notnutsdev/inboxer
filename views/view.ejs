@@ -7,6 +7,22 @@
 <body>
     <%- include("base/nav") %>
 
+    <!--- for users that don't have javascript -->
+    <noscript>
+        <!--- without javascript the nsfw checker doens't work so we remove the default blur -->
+        <style>
+            #content img {
+                filter: none;
+            }
+        </style>
+
+        <div class="pixel-box" style="position: fixed; bottom: 10px; left: 10px; display: flex; background-color: rgb(255, 79, 79) !important">
+            <img src="/img/warning.png" alt="!">
+            <span>Your browser doesn't support JavaScript.<br>
+            NSFW images will not be blurred or filtered.</span>
+        </div>
+    </noscript>
+
     <!--- overlay used when opening links -->
     <div id="overlay"></div>
 

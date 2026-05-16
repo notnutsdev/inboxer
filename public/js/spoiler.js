@@ -85,6 +85,16 @@ const checkAllImages = () => {
     }
 }
 
+// Function that inits a model
+const initModel = m => {
+    model = m;
+
+    checkAllImages();
+
+    document.onscroll = e => checkAllImages();
+}
+
+
 // Images to check
 const images = [...document.querySelectorAll("#content img")];
 const overlay_list = []; // List of overlays. Each overlay has the same index as the image it hides.
@@ -95,25 +105,28 @@ const warning_msg_html = `<h3 style="margin: 0px">NSFW Content</h3><p>This image
 
 // So that only one image can be checked at a time
 let canCheckImg = true;
-// Load the model
+// Model variable used to store the current model
 let model;
 
 if (images.length > 0) {
     setImgCORS();
 
-    document.addEventListener("DOMContentLoaded", () => {
+    //document.addEventListener("DOMContentLoaded", () => {
+    // Try to load the model from cache (indexeddb)
+    nsfwjs.load("indexeddb://MobileNetV2")
+    .then(m => initModel(m))
+    .catch(error => {
+        // If it doesn't exist in the cache, load it normaly
         nsfwjs.load("MobileNetV2").then(m => {
-            model = m;
-            console.log("Loaded model.");
-
-            
-            checkAllImages();
-
-            document.onscroll = e => checkAllImages();
+            m.model.save("indexeddb://MobileNetV2"); // Save model to indexeddb for faster loading in the future
+            initModel(m);
         });
     });
+    //});
 };
+// This code sucks and i'll have to rewrite this in the future
 
 // TODO:
-// Cache the model in indexeddb for faster load speeds.
 // Cache scan results in localstorage or session storage, to not have to reload the model every time.
+// Make everything async
+// Make sure it checks for henta1 too
