@@ -14,12 +14,30 @@
                 <input type="text" name="username" id="username" placeholder="Username here">
                 
                 <label for="content">Content</label>
-                <textarea name="content" id="content" placeholder="Content here"></textarea>
+
+                <div style="width: 80%">
+                    <%# Text editor bar %>
+                    <div id="editor_bar">
+                        <button class="btn" type="button" action="h1"><img height="18px" src="/img/texteditor/header1.png" alt="h1"></button>
+                        <button class="btn" type="button" action="h2"><img height="18px" src="/img/texteditor/header2.png" alt="h2"></button>
+                        <button class="btn" type="button" action="h3"><img height="18px" src="/img/texteditor/header3.png" alt="h3"></button>
+                        <button class="btn" type="button" action="b"><img height="18px" src="/img/texteditor/bold.png" alt="b"></button>
+                        <button class="btn" type="button" action="i"><img height="18px" src="/img/texteditor/italics.png" alt="i"></button>
+                        <button class="btn" type="button" action="u"><img height="18px" src="/img/texteditor/underline.png" alt="u"></button>
+                        <button class="btn" type="button" action="img"><img height="18px" src="/img/texteditor/image.png" alt="img"></button>
+                        <button class="btn" type="button" action="a"><img height="18px" src="/img/texteditor/link.png" alt="a"></button>
+                    </div>
+
+                    <textarea name="content" id="content" placeholder="Content here"></textarea>
+                </div>
                 
                 <button class="btn" type="submit">Post</button>
             </form>
         </div>
     </div>
+
+    <!--- scripts -->
+    <script src="/js/texteditor.js" defer></script>
 
     <%- include("base/footer") %>
 </body>

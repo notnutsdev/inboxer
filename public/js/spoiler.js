@@ -113,3 +113,7 @@ if (images.length > 0) {
         });
     });
 };
+
+// TODO:
+// Cache the model in indexeddb for faster load speeds.
+// Cache scan results in localstorage or session storage, to not have to reload the model every time.

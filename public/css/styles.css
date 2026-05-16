@@ -459,3 +459,17 @@ textarea {
 .no-margin-top {
 	margin-top: 0px;
 }
+
+/* Text editor */
+#editor_bar {
+	line-height: 0px;
+}
+
+#editor_bar > .btn {
+	margin-top: 0px;
+	padding: 4px 3px 0px 3px
+}
+
+textarea#content {
+	width: 100%
+}
