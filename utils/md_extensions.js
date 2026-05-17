@@ -1,6 +1,7 @@
 // Markdown extensions
 const validator = require("validator");
 const ejs = require("ejs");
+const hljs = require("highlight.js");
 
 const extensions = {
     hrTag: {
@@ -48,10 +49,40 @@ const extensions = {
                 return result_html;
             })
         }
+    },
+
+    codeBlock: {
+        type: "lang",
+        regex: /&#96;&#96;&#96;(.*)((.|\n)*)&#96;&#96;&#96;/gm, // For code blocks, format ```<language>\n code here```    ---- /```(.*)((.|\n)*)```/gm
+        filter: (text, converter) => {
+            const regex = /&#96;&#96;&#96;(.*)((.|\n)*)&#96;&#96;&#96;/gm; // Here, we use the HTML code instead of the `, as we escape the input before we convert it.
+
+            // Language is the prefered language by the user and code the actual content of the code block
+            return text.replace(regex, (match, language, code) => {
+                // Check that the language the user has provided exists
+                if (!hljs.getLanguage(language)) {
+                    language = "txt"; // we set it to text so that it just comes out plain
+                }
+
+                const language_name = hljs.getLanguage(language).name;
+                const code_html = hljs.highlight(validator.unescape(code), { language: language }).value;
+
+                let result_html;
+                ejs.renderFile(__dirname + "/../views/markdown/codeblock.ejs", { language: language_name, code: code_html, raw_code: code }, {}, (err, data) => {
+                    if (err) {
+                        result_html = "Failed to compile your code to HTML.";
+                    }
+
+                    result_html = data;
+                })
+
+                return result_html;
+            })
+        }
     }
 }
 
 // TODO: add youtube video embedding
-// TODO: add code synthax highlighting for ``````
+// TODO: remove whitespaces from before and after the codeblock content
 
 module.exports = extensions;

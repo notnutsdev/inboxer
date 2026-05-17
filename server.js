@@ -8,7 +8,7 @@ const initDB = require("./utils/initdb");
 
 const showdown = require("showdown");
 const md_ext = require("./utils/md_extensions");
-const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, extensions: [ md_ext.hrTag, md_ext.videoTag ] });
+const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, extensions: [ md_ext.hrTag, md_ext.videoTag, md_ext.codeBlock ] });
 
 const validator = require("validator");
 
@@ -17,6 +17,7 @@ const banned_words = require("./banned_words.json");
 
 const { Webhook, MessageBuilder } = require("discord-webhook-node");
 
+// TODO: have an announcement message that appears linking to a post if set in the .env
 
 // Loading environment variables
 process.loadEnvFile("./.env");
@@ -66,9 +67,9 @@ app.post("/create", (req, res) => {
 
     content = converter.makeHtml(validator.escape(content));
 
-    db.exec(`
-        INSERT INTO posts (uid, username, content, permissions) VALUES ('${uuid}', '${validator.escape(username)}', '${content}', 0);
-    `);
+    db.prepare(`
+        INSERT INTO posts (uid, username, content, permissions) VALUES (?, ?, ?, ?);
+    `).run(uuid, validator.escape(username), content, 0);
 
     res.redirect("/post/" + uuid);
 })

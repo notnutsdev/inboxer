@@ -1,0 +1,21 @@
+<div class="code_block">
+    <div class="code_info">
+        <div class="language"><%= language %></div>
+
+        <%# Copy content from the <code> tag %>
+        <div class="copy_btn" onclick='navigator.clipboard.writeText(unescapeHTML(this.parentElement.parentElement.querySelector(".code_content > code").innerHTML));'>
+            <img src="/img/copy.png" alt="copy" class="no_scan">
+        </div>
+    </div>
+
+    <div class="code_content">
+        <pre>
+            <%- code %>
+        </pre>
+
+        <%# Raw code, HTML escaped, used to copy the code %>
+        <code style="display: none;">
+            <%= raw_code %>
+        </code>
+    </div>
+</div>

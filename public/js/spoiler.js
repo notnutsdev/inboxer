@@ -97,7 +97,7 @@ const initModel = m => {
 
 
 // Images to check
-const images = [...document.querySelectorAll("#content img")];
+const images = [...document.querySelectorAll("#content img:not(.no_scan)")];
 const overlay_list = []; // List of overlays. Each overlay has the same index as the image it hides.
 
 // HTML

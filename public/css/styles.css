@@ -163,6 +163,13 @@ textarea {
 	background-color: #a7a7a7;
 }
 
+.copy_btn img {
+	transition: all 0.1s ease-in-out;
+}
+.copy_btn img:hover {
+	transform: scale(80%);
+}
+
 /* Wrappers */
 .wrapper {
     display: flex;
@@ -241,6 +248,10 @@ textarea {
 	max-width: 100%;
 	filter: blur(20px);
 }
+
+#content img.no_scan {
+	filter: none;
+} /* images that have this class in the content's body are not scanned by the NSFW checker. This should be for internal images and assets ONLY */
 
 /* Overlay */
 #overlay {
@@ -498,4 +509,65 @@ textarea#content {
 
 .video_container video {
 	width: 100%;
+}
+
+/* Code blocks */
+.code_block {
+	display: flex;
+	flex-direction: column;
+	background-color: #24222e;
+	color: #d3d0e4;
+	padding: 5px 10px;
+	clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
+}
+
+.code_block .code_info {
+	display: flex;
+}
+
+.code_block .language {
+	padding: 0px 10px;
+	border-bottom: dashed 1px #6f698f;
+	flex-grow: 1;
+}
+
+.code_block .copy_btn img {
+	height: 15px
+}
+
+.code_block .code_content {
+	padding: 10px 0px;
+}
+
+/* Code blocks synthax highlight */
+.hljs-built_in {
+	color: #b39d63;
+}
+
+.hljs-string {
+	color: #b8693c;
+}
+
+.hljs-keyword {
+	color: #8b52b1;
+}
+
+.hljs-number {
+	color: #7f9751;
+}
+
+.hljs-literal {
+	color: #4166ac;
+}
+
+.hljs-params {
+	color: #519aa3;
+}
+
+.hljs-title.function_ {
+	color: #a7a14f;
+}
+
+.hljs-type {
+	color: #6f73a8;
 }
