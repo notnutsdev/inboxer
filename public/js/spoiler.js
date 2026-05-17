@@ -25,9 +25,10 @@ const isNSFW = (img, success_call, error_call) => {
 
         const nsfw_level = predictions.filter(value => value.className == "Porn")[0].probability;
         const seggsy_level = predictions.filter(value => value.className == "Sexy")[0].probability;
+        const hanime_level = predictions.filter(value => value.className == "Hentai")[0].probability;
 
-        console.log(nsfw_level, seggsy_level)
-        if (nsfw_level >= 0.40 || seggsy_level >= 0.40) {
+        console.log(nsfw_level, seggsy_level, hanime_level)
+        if (nsfw_level >= 0.40 || seggsy_level >= 0.40 || hanime_level >= 0.40) {
             success_call(true);
             return;
         }
