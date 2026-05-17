@@ -8,6 +8,9 @@ for (let i = 0; i < links.length; i++) {
     const elem = links[i];
     const target = elem.href; // The link that the user tried to visit
 
+    // If the link is a reference to another element of the post (refers to another element's ID), don't add the redirect warning.
+    if (target.match(/#\w+/g) && document.querySelector(`#content ${target}`)) continue;
+
     elem.addEventListener("click", e => {
         e.preventDefault();
 

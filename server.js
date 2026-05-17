@@ -71,7 +71,6 @@ app.post("/create", (req, res) => {
     `);
 
     res.redirect("/post/" + uuid);
-    // res.send(`Successfully created post! ${uuid}`);
 })
 
 app.get('/post/:uid', (req, res) => {
@@ -142,6 +141,9 @@ for (const [key, value] of Object.entries(config.urls)) {
     app.get("/" + key, (req, res) => res.redirect("/post/" + value));
 }
 
+
+//// STAFF RELATED
+
 // Staff login URL.
 // Checks if the user isn't already logged in as a staff member
 app.all(process.env.STAFF_LOGIN_URL, (req, res, next) => {
@@ -193,11 +195,11 @@ app.get("/delete/:uid", (req, res) => {
         return res.redirect("/");
     }
     
-    const post = db.prepare(`SELECT * FROM posts WHERE uid = '${uid}'`).all();
+    const post = db.prepare("SELECT * FROM posts WHERE uid = ?", [ uid ]).all();
 
     if (!post) return req.redirect("/");
 
-    db.exec(`DELETE FROM posts WHERE uid = '${uid}'`);
+    db.exec("DELETE FROM posts WHERE uid = ?", [ uid ]);
 
     // Log everything to the webhook log channel
     const hook = new Webhook(process.env.STAFF_LOGS_WEBHOOK);
@@ -223,6 +225,8 @@ app.get("/libraries/:file", (req, res) => {
 
     res.sendFile(__dirname + fp)
 })
+
+// TODO: have routers instead of one big file
 
 app.listen(8000, () => {
     initDB(db);
