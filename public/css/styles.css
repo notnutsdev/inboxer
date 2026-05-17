@@ -477,3 +477,25 @@ textarea {
 textarea#content {
 	width: 100%
 }
+
+/* Video player related */
+.video_container {
+	position: relative;
+}
+
+.video_container > .content_warning {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	background-color: #0000009f;
+	backdrop-filter: blur(15px);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+}
+
+.video_container video {
+	width: 100%;
+}

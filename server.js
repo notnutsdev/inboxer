@@ -8,7 +8,7 @@ const initDB = require("./utils/initdb");
 
 const showdown = require("showdown");
 const md_ext = require("./utils/md_extensions");
-const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, extensions: [ md_ext.hrTag ] });
+const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, extensions: [ md_ext.hrTag, md_ext.videoTag ] });
 
 const validator = require("validator");
 

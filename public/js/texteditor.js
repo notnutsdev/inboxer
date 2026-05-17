@@ -74,6 +74,7 @@ controls.forEach(elem => elem.addEventListener("click", e => {
             new_pos_all = `${content.before}\n[${text}](${link})`.length;
             textarea.value = `${content.before}\n[${text}](${link})${content.after}`;
             break;
+        // TODO: Make a button for videos!!!
     }
 
     textarea.selectionStart = new_pos_all || new_pos_start || position.start;

@@ -1,0 +1,13 @@
+<div class="video_container">
+    <% if (locals.is_nsfw) { %>
+        <div class="content_warning">
+            <h1>NSFW Content Warning</h1>
+            <p>This content has been marked as Not Safe For Work</p>
+            <button class="btn" onclick="this.parentElement.parentElement.removeChild(this.parentElement)">See content</button>
+        </div>
+    <% } %>
+
+    <video controls>
+        <source src="<%- src %>">
+    </video>
+</div>
