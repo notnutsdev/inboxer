@@ -90,6 +90,7 @@ controls.forEach(elem => elem.addEventListener("click", e => {
 
             new_pos_all = `${content.before}\n?(video){${src}}`;
             textarea.value = `${content.before}\n?(video){${src}}\n${content.after}`;
+            break;
         case "code":
             const language = prompt("Enter the language (py, js, c, rb...)");
 
@@ -97,6 +98,7 @@ controls.forEach(elem => elem.addEventListener("click", e => {
 
             new_pos_all = `${content.before}\n\`\`\`${language}\n`.length;
             textarea.value = `${content.before}\n\`\`\`${language}\n\n\`\`\`\n${content.after}`;
+            break;
     }
 
     textarea.selectionStart = new_pos_all || new_pos_start || position.start;

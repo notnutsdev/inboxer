@@ -536,7 +536,7 @@ textarea#content {
 }
 
 .code_block .code_content {
-	padding: 10px 0px;
+	/* padding: 10px 0px; */
 }
 
 /* Code blocks synthax highlight */
