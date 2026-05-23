@@ -3,22 +3,9 @@
 // triska.xyz
 // fuck sam altman
 
-// TODO: have one javascript file with all the useful items (popover, overlays etc) so that they can be used more easily.
+import { createPopover } from "./components.js";
 
 const popovers = document.getElementsByClassName("popover");
-
-// Function used to create popover items
-const createPopover = event => {
-    // Create the actual element
-    const popoverElement = document.createElement("div");
-    popoverElement.classList.add("popover_container");
-
-    // Put the popover at the right cordinates
-    popoverElement.style.left = event.clientX + "px";
-    popoverElement.style.top = event.clientY - 37 + "px";
-
-    return popoverElement;
-}
 
 for (let i = 0; i < popovers.length; i++) {
     const element = popovers[i];
