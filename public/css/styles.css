@@ -167,6 +167,15 @@ textarea {
 	background-color: #a7a7a7;
 }
 
+.btn-transparent {
+	background-color: transparent;
+	border: none;
+
+	&:hover {
+        border-bottom: none;
+    }
+}
+
 .copy_btn img {
 	transition: all 0.1s ease-in-out;
 }

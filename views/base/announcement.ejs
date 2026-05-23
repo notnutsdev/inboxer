@@ -1,11 +1,25 @@
-<% if (locals.announcement.display) { %>    
+<% if (locals.announcement.display) { %>
 <div id="announcement" class="pixel-container">
     <div class="before">
         <h2 style="margin: 0px;">Announcement</h2>
         <div id="announcement_content"><%- locals.announcement.html %></div>
 
-        <div style="position: absolute; top: 5px; right: 5px" class="btn btn-danger">x</div>
+        <div style="position: absolute; top: 5px; right: 0; opacity: 0.5;" class="btn btn-transparent" id="announcement_dismiss">x</div>
     </div>
     <div class="after"></div>
 </div>
+
+<%# Check if the user has already dismissed the announcement, and the dismiss button function %>
+<script>
+    const announcement = document.getElementById("announcement");
+
+    if (sessionStorage.getItem("dismissed_announcement") == "true") {
+        document.body.removeChild(announcement);
+    } else {
+        document.getElementById("announcement_dismiss").addEventListener("click", e => {
+            document.body.removeChild(announcement);
+            sessionStorage.setItem("dismissed_announcement", "true");
+        })
+    }
+</script>
 <% } %>
