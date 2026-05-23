@@ -7,3 +7,5 @@ db/database.db
 # Secrets
 .env
 production.env
+
+config.json

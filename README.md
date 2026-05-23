@@ -8,7 +8,7 @@ Anonymous text sharing platform, with style.
 - Automatic NSFW content detection
 
 ## Planned features
-- [ ] Text editor with buttons
+- [x] Text editor with buttons
 - [ ] Edit posts
 - [ ] More formatters
 

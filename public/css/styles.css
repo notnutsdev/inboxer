@@ -582,3 +582,20 @@ textarea#content {
 .hljs-type {
 	color: #6f73a8;
 }
+
+/* end code blocks */
+
+#announcement {
+	position: fixed;
+	bottom: 1%;
+	left: 1%;
+	max-width: 55%;
+	padding: 10px;
+}
+
+#announcement .before {
+	background-color: #f09936;
+}
+#announcement .after {
+	background-color: #5e3b14;
+}

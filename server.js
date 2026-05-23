@@ -35,6 +35,9 @@ app.use(session({
     saveUninitialized: false
 }))
 
+// Locals/Global variables
+app.locals = config.locals;
+
 app.get("/", (req, res) => {
     const posts = db.prepare("SELECT * FROM posts ORDER BY RANDOM() LIMIT 5;").all();
     res.render("index.ejs", { posts: posts });
