@@ -159,6 +159,10 @@ textarea {
 	background-color: rgb(235, 69, 69);
 }
 
+.btn-success {
+	background-color: rgb(149, 235, 69);
+}
+
 .btn-close {
 	background-color: #a7a7a7;
 }
@@ -168,6 +172,13 @@ textarea {
 }
 .copy_btn img:hover {
 	transform: scale(80%);
+}
+
+/* To create rows of aligned buttons */
+.btn-row {
+	display: flex;
+	gap: 10px;
+	align-items: center;
 }
 
 /* Wrappers */

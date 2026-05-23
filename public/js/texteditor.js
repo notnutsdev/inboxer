@@ -1,3 +1,5 @@
+import { createOverlay, createCloseBtn } from "./components.js";
+
 // Text editor for the create post page
 // Todo: have an array with previous states, so that when the user does ctrl + z, it goes back to a previous state
 
@@ -21,12 +23,53 @@ const getContent = position => {
     }
 }
 
+/* 
+Options:
+- `title` The title of the dialog window.
+- `placeholder` The placeholder of the input field.
+- `btn_text` The text of the green button.
+*/
+// TODO: have this component be able to show multiple fields with ..params
+const createInputDialog = (options, successCallback) => {
+    const overlay = createOverlay(true);
+    const overlayInner = overlay.querySelector("#overlay_inner");
+    overlayInner.innerHTML = `<h2>${options.title}</h2>`;
+
+    const inputField = document.createElement("input");
+    inputField.placeholder = options.placeholder;
+    inputField.style = "background-color: #bbbbbb; margin-bottom: 15px;";
+
+    const submitBtn = document.createElement("button");
+    submitBtn.innerHTML = (options.btn_text) ? options.btn_text : "Add";
+    submitBtn.classList.add("btn", "btn-success");
+
+    const btn_row = document.createElement("div");
+    btn_row.classList.add("btn-row");
+    btn_row.append(submitBtn, createCloseBtn());
+
+    overlayInner.append(inputField, btn_row);
+
+    overlay.style.display = "block";
+    document.body.appendChild(overlay);
+    
+    // Calling the successCallback if the user clicked "Add"
+    submitBtn.addEventListener("click", e => {
+        const val = inputField.value;
+
+        if (!val) return;
+
+        document.body.removeChild(overlay);
+        successCallback(val);
+    })
+}
+
+// Get clicks for each button of the text editor
 controls.forEach(elem => elem.addEventListener("click", e => {
     const action = elem.attributes.action.value;
 
     textarea.focus(); // Focus the textarea if it isn't already
 
-    // The selected text in the textarea
+    // Cursor/selection position from the selected text in the textarea
     const position = getPosition();
 
     // Content from before, after and between selection
@@ -67,37 +110,30 @@ controls.forEach(elem => elem.addEventListener("click", e => {
             textarea.value = `${content.before}__${content.between}__${content.after}`;
             break;
         case "img":
-            const img_url = prompt("Please enter your image's URL (you can host it in imx.to for example)"); // Todo: have a real box that shows up on the DOM and not just a prompt
-            
-            if (!img_url) return;
-            
-            new_pos_all = `${content.before}\n![image](${img_url})`.length;
-            textarea.value = `${content.before}\n![image](${img_url})\n${content.after}`;
+            createInputDialog({ title: "Enter your image URL", placeholder: "Enter your URL here..." }, img_url => {
+                new_pos_all = `${content.before}\n![image](${img_url})`.length;
+                textarea.value = `${content.before}\n![image](${img_url})\n${content.after}`;
+            });
             break;
         case "a":
-            const link = prompt("Please enter your link"); // Todo: have a real box that shows up on the DOM and not just a prompt
-            const text = prompt("Please enter the text that should be displayed for your link");
-            
-            if (!link || !text) return;
-            
-            new_pos_all = `${content.before}\n[${text}](${link})`.length;
-            textarea.value = `${content.before}\n[${text}](${link})${content.after}`;
+            createInputDialog({ title: "Enter your URL", placeholder: "Enter your URL here..." }, link => {
+                createInputDialog({ title: "Enter your URL placeholder", placeholder: "Enter your placeholder..." }, text => {
+                    new_pos_all = `${content.before}\n[${text}](${link})`.length;
+                    textarea.value = `${content.before}\n[${text}](${link})${content.after}`;
+                });
+            });
             break;
         case "video":
-            const src = prompt("Please enter your video link (must be a direct URL)");
-
-            if (!src) return
-
-            new_pos_all = `${content.before}\n?(video){${src}}`;
-            textarea.value = `${content.before}\n?(video){${src}}\n${content.after}`;
+            createInputDialog({ title: "Enter your video URL", placeholder: "Enter your URL here..." }, src => {
+                new_pos_all = `${content.before}\n?(video){${src}}`;
+                textarea.value = `${content.before}\n?(video){${src}}\n${content.after}`;
+            });
             break;
         case "code":
-            const language = prompt("Enter the language (py, js, c, rb...)");
-
-            if (!language) return;
-
-            new_pos_all = `${content.before}\n\`\`\`${language}\n`.length;
-            textarea.value = `${content.before}\n\`\`\`${language}\n\n\`\`\`\n${content.after}`;
+            createInputDialog({ title: "Enter your language (py, js, c...)", placeholder: "Enter your language..." }, language => {
+                new_pos_all = `${content.before}\n\`\`\`${language}\n`.length;
+                textarea.value = `${content.before}\n\`\`\`${language}\n\n\`\`\`\n${content.after}`;
+            });
             break;
     }
 

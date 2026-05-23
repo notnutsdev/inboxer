@@ -17,10 +17,13 @@ export const createPopover = event => {
 }
 
 //// OVERLAYS
+// Default close button
+export const closeBtnHTML = '<button id="overlay_close" class="btn btn-close">Close</button>'
+
 // Function used to create overlays
 export const createOverlay = (removeDefaultCloseBtn) => {
     // If the user has specified that no close should be added to the element
-    let closebtn = '<button id="overlay_close" onclick="closeOverlay();" class="btn btn-close">Close</button>';
+    let closebtn = closeBtnHTML;
     if (removeDefaultCloseBtn) {
         closebtn = ""
     }
@@ -41,3 +44,12 @@ document.body.addEventListener("mousedown", e => {
         document.body.removeChild(overlay);
     }
 })
+
+// Creates a close button element (like the closeBtnHTML but as a Node element)
+export const createCloseBtn = () => {
+    const closeBtn = document.createElement("div");
+    closeBtn.innerText = "Close";
+    closeBtn.classList.add("btn", "btn-close");
+    closeBtn.id = "overlay_close";
+    return closeBtn
+}

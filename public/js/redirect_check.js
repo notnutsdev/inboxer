@@ -3,7 +3,7 @@ import { createOverlay } from "./components.js";
 // Warn the user that they are being redirected
 const links = document.querySelectorAll("#content a");
 
-const overlayHTML = `<h2>Redirection warning.</h2> This post is trying to redirect you to: <a href="<%- url %>"><%= url %></a><br>Only click links from people <b>you trust</b><br><div style="display: flex; gap: 10px; align-items: center;"><a href="<%- url %>"><button style="margin: 15px 0px" class="btn btn-danger">Visit link</button></a><button id="overlay_close" class="btn btn-close">Close</button></div>`;
+const overlayHTML = `<h2>Redirection warning.</h2> This post is trying to redirect you to: <a href="<%- url %>"><%= url %></a><br>Only click links from people <b>you trust</b><br><div class="btn-row"><a href="<%- url %>"><button style="margin: 15px 0px" class="btn btn-danger">Visit link</button></a><button id="overlay_close" class="btn btn-close">Close</button></div>`;
 
 for (let i = 0; i < links.length; i++) {
     const elem = links[i];
