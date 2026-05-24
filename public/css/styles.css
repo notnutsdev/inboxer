@@ -608,3 +608,29 @@ textarea#content {
 #announcement .after {
 	background-color: #5e3b14;
 }
+
+/* Video embeds */
+#content .iframe-container {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	max-width: 600px;
+	max-height: calc(600px / 16);
+	padding-top: 56.25%;
+}
+
+#content .iframe-container iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#content .iframe-info {
+	padding-left: 10px;
+	color: #747474;
+	font-style: italic;
+}

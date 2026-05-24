@@ -24,3 +24,17 @@ for (let i = 0; i < links.length; i++) {
         document.body.appendChild(overlayElem);
     })
 }
+
+// Warn the user if a video embed has popups
+const popup_embeds = document.querySelector("[has-popups=true]");
+
+if (popup_embeds) {
+    const overlay = createOverlay(true);
+    overlay.style.display = "block";
+
+    const overlayInner = overlay.querySelector("#overlay_inner");
+    overlayInner.style.maxWidth = "350px";
+    overlayInner.innerHTML = `<h2 style="margin: 0px">Warning</h2><div>This post contains embeds with popups ads. We don't control any of these ads. Be careful when clicking and close any page that opens in another tab.</div><div class="btn-row" style="margin-top: 10px;"><button class="btn btn-close" id="overlay_close">I understand</button></div>`;
+
+    document.body.appendChild(overlay);
+}

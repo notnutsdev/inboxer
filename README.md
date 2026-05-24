@@ -25,6 +25,8 @@ Anonymous text sharing platform, with style.
 > Represents special redirect pages. Each key is the URL path and the value the ID of the post this page should point to. For example, `/formatting` will redirect to `/post/<the id you enter in config.json>`
 - `libraries`
 > Libraries used by the front end. Each key is the path (`/libraries/<key>`) and the value their path in the `node_modules`.
+- `locals`
+> Global variables accessible on all templates. You can configure announcements here.
 
 ## Selfhosting
 Run `npm install`
