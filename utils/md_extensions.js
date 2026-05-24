@@ -89,19 +89,19 @@ const extensions = {
 
             // Regex for all sites
             // https:\/\/((?<subdomain>[a-z]*)\.)?(?<domain>[a-z]*)\.(?<tld>[a-z]{1,3})\/(?<url>\S*)
-            const sitesRegex = /https:\/\/((?<subdomain>[a-z]*)\.)?(?<domain>[a-z]*)\.(?<tld>[a-z]{1,3})\/(?<url>\S*)/;
+            const sitesRegex = /https:\/\/(?<link>((?<subdomain>[a-z]*)\.)?(?<domain>[a-z]*)\.(?<tld>[a-z]{1,3})\/(?<url>\S*))/;
 
             // How each supported site's embed URL should look like
             // Every {@video_id} will be replaced by the video ID.
             // hasPopups indicates to the site if a warning should be shown when showing a iframe with this.
             const siteFormats = {
                 "youtube": {
-                    regex: /(www\.(?<domain>youtube\.com)&#x2F;watch\?v=(?<video_id>[a-zA-Z0-9]{6,}))/,
+                    regex: /(www\.(?<domain>youtube\.com)\/watch\?v=(?<video_id>[a-zA-Z0-9]{6,}))/,
                     format: "https://www.youtube.com/embed/{@video_id}",
                     hasPopups: false
                 },
                 "abyssplayer": {
-                    regex: /((?<domain>abyssplayer\.com)&#x2F;(?<video_id>\S{6,}))/,
+                    regex: /((?<domain>abyssplayer\.com)\/(?<video_id>\S{6,}))/,
                     format: "https://abyssplayer.com/{@video_id}",
                     hasPopups: true
                 }
@@ -110,24 +110,26 @@ const extensions = {
             return text.replace(regex, (match, embed_url) => {
                 embed_url = validator.unescape(embed_url); // unescape the url
 
-                // Testing that the URL is a valid URL and a supported one.
-                console.log(embed_url)
+                // Testing that the URL is a valid URL.
                 if (!sitesRegex.test(embed_url)) {
                     return "Invalid embed URL.";
                 }
 
                 const matches = embed_url.match(sitesRegex);
                 const domain = matches.groups.domain; // the domain of the attempted URL embed
+                const tld = matches.groups.tld; // the domain tld
+                const link = matches.groups.link; // the link of the embed, without https://
 
                 const embed_info = siteFormats[domain];
-                if (!embed_info) return "Embedding videos from this site is not yet supported."
-                const embed_match = embed_url.match(embed_info.regex);
-                console.log(embed_match) // FIX ME
+                if (!embed_info) return "Embedding videos from this site is not yet supported."; // Check that the provided URL is a supported site.
+
+                const embed_match = link.match(embed_info.regex);
+                console.log(link, embed_match)
                 const video_id = embed_match.groups.video_id;
 
-                if (!video_id) return "Invalid URL format."
+                if (!video_id) return "Invalid URL format.";
 
-                return `<div style="max-width: 600px;"><div class="iframe-container"><iframe width="420" height="345" src="${embed_info.format.replace("{@video_id}", video_id)}" has-popups="${embed_info.hasPopups}">Your browser does not support iframes.</iframe></div><div class="iframe-info">External video embeded from ${domain}</div></div>`
+                return `<div style="max-width: 600px;"><div class="iframe-container"><iframe width="420" height="345" src="${embed_info.format.replace("{@video_id}", video_id)}" has-popups="${embed_info.hasPopups}">Your browser does not support iframes.</iframe></div><div class="iframe-info">External video embeded from <a href="${embed_url}">${domain}.${tld}</a></div></div>`
             })
         }
     }
