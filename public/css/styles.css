@@ -619,6 +619,7 @@ textarea#content {
 	position: relative;
 	overflow: hidden;
 	width: 100%;
+	height: 100vh; /* might have to change this, so that the iframe takes the whole space */
 	max-width: 600px;
 	max-height: calc(600px / 16);
 	padding-top: 56.25%;
@@ -643,6 +644,7 @@ textarea#content {
 
 .embed_container {
 	max-width: 600px;
+	max-height: 500px;
 	position: relative;
 }
 

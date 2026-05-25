@@ -5,6 +5,14 @@
 const setImgCORS = () => {
     for (let i = 0; i < images.length; i++) {
         const img = images[i];
+
+        // Skip NSFW checker for images smaller than 200x200
+        if (img.naturalHeight <= 200 && img.naturalWidth <= 200) {
+            images.splice(i, 1); // remove the image from the "images to check" array
+            img.style.filter = "none";
+            continue;
+        }
+
         img.crossOrigin = "anonymous";
     }
 }
@@ -109,9 +117,10 @@ let canCheckImg = true;
 // Model variable used to store the current model
 let model;
 
-if (images.length > 0) {
-    setImgCORS();
+// Setting the images CORS before loading the model as this function can filter out images that shouldn't be checked
+setImgCORS();
 
+if (images.length > 0) {
     //document.addEventListener("DOMContentLoaded", () => {
     // Try to load the model from cache (indexeddb)
     nsfwjs.load("indexeddb://MobileNetV2")
