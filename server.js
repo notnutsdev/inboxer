@@ -2,9 +2,9 @@ const express = require("express");
 const session = require("express-session");
 const app = express();
 
-const { DatabaseSync } = require("node:sqlite");
-const db = new DatabaseSync("./db/database.db");
-const initDB = require("./utils/initdb");
+const sequelize = require("./models/connection");
+const initModels = require("./models/init");
+const Post = require("./models/posts");
 
 const showdown = require("showdown");
 const md_ext = require("./utils/md_extensions");
@@ -17,11 +17,11 @@ const banned_words = require("./banned_words.json");
 
 const { Webhook, MessageBuilder } = require("discord-webhook-node");
 
-// Routers
-const staffRoutes = require("./routes/staff");
-
 // Loading environment variables
 process.loadEnvFile("./.env");
+
+// Routers
+const staffRoutes = require("./routes/staff");
 
 // Setting ejs as our view engine
 app.set("view engine", "ejs");
@@ -42,8 +42,8 @@ app.use("/", staffRoutes)
 // Locals/Global variables
 app.locals = config.locals;
 
-app.get("/", (req, res) => {
-    const posts = db.prepare("SELECT * FROM posts ORDER BY RANDOM() LIMIT 5;").all();
+app.get("/", async (req, res) => {
+    const posts = await Post.findAll({ order: sequelize.random(), limit: 5 });
     res.render("index.ejs", { posts: posts });
 })
 
@@ -51,7 +51,7 @@ app.get('/create', (req, res) => {
     res.render("create.ejs");
 })
 
-app.post("/create", (req, res) => {
+app.post("/create", async (req, res) => {
     const username = req.body.username;
     let content = req.body.content;
 
@@ -74,30 +74,38 @@ app.post("/create", (req, res) => {
 
     content = converter.makeHtml(validator.escape(content));
 
-    db.prepare(`
-        INSERT INTO posts (uid, username, content, permissions) VALUES (?, ?, ?, ?);
-    `).run(uuid, validator.escape(username), content, 0);
+    // Adding the record to the database
+    const post = await Post.create({ uid: uuid, username: validator.escape(username), content: content, permissions: 0 });
 
     res.redirect("/post/" + uuid);
 })
 
-app.get('/post/:uid', (req, res) => {
+app.get('/post/:uid', async (req, res) => {
     const uid = req.params.uid;
-    let post = db.prepare(`SELECT * FROM posts WHERE uid = '${uid}';`).all()[0];
-    
+    // DEPRECATE
+    const post = await Post.findOne({
+        where: {
+            uid: uid
+        }
+    });
+
     if (!post) {
         return res.render("view.ejs", { error: "No post found for this ID." });
     }
 
+    let isStaff = false;
     if (req.session.staff_login) {
-        post.isStaff = true;
+        isStaff = true;
     }
 
-    res.render("view.ejs", post);
+    res.render("view.ejs", { post: post, isStaff: isStaff });
 })
 
-app.get("/random", (req, res) => {
-    const post = db.prepare("SELECT * FROM posts ORDER BY RANDOM() LIMIT 1;").all()[0];
+app.get("/random", async (req, res) => {
+    const post = await Post.findOne({ order: sequelize.random() });
+
+    if (!post) return res.render("blank.ejs", { error: "No posts where found." });
+
     res.redirect("/post/" + post.uid);
 })
 
@@ -116,9 +124,9 @@ app.post("/report", (req, res) => {
     if (5 > message.length || message.length > 3000) return res.render("report.ejs", { error: "Your message must be between 5 and 3000 characters." })
     
     // Check that the given post ID exists in the database to prevent useless reports.
-    const post = db.prepare(`SELECT * FROM posts WHERE uid = '${post_id}';`).all();
+    const post = Post.findOne({ where: { uid: post_id }});
 
-    if (post.length <= 0) return res.render("report.ejs", { error: "Post with this ID doesn't exist in our records." });
+    if (!post) return res.render("report.ejs", { error: "Post with this ID doesn't exist in our records." });
 
     const webhooks = process.env.DISCORD_WEBHOOKS.split(",");
     const hook_url = webhooks[Math.floor(Math.random() * webhooks.length)]; // Get a random webhook URL.
@@ -131,7 +139,7 @@ app.post("/report", (req, res) => {
     .setAuthor(`Sent by: ${email}`)
     .addField("Post ID", `\`${post_id}\``)
     .addField("Post link", `[click here](${req.protocol}://${req.hostname}/post/${post_id})`)
-    .addField("Post author username:", `\`${post[0].username}\``)
+    .addField("Post author username:", `\`${post.username}\``)
     .addField("Report message", `\`\`\`${message}\`\`\``)
     .setTimestamp();
 
@@ -197,7 +205,6 @@ app.get("/libraries/:file", (req, res) => {
 // TODO: have routers instead of one big file
 
 app.listen(8000, () => {
-    initDB(db);
     console.log(`                  @@@@@@@@@@@@                  
              @@@@@@@@@@@@@@@@@@@@@@             
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@          
@@ -223,6 +230,18 @@ app.listen(8000, () => {
              @@@@@@@@@@@@@@@@@@@@@@             
                   @@@@@@@@@@@@@                 
                                                 `)
+
+    // Test the database connection
+    try {
+        sequelize.authenticate();
+        console.log("Connection to database was successfull!");
+    } catch (error) {
+        throw new Error("Database connection failed.")
+    }
+
+    // Init models
+    initModels();
+
     console.log("\x1b[32mRunning Inboxer!", "\x1b[0m")
     console.log('Port: 8000');
 })

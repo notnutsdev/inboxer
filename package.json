@@ -1,6 +1,6 @@
 {
-  "name": "testpastejs",
-  "version": "1.0.0",
+  "name": "inboxer",
+  "version": "0.0.1",
   "description": "",
   "license": "ISC",
   "author": "",
@@ -15,10 +15,13 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "highlight.js": "^11.11.1",
+    "mysql2": "^3.22.3",
     "nsfwjs": "^4.3.0",
     "remark-html": "^16.0.1",
     "sanitize": "^2.1.2",
+    "sequelize": "^6.37.8",
     "showdown": "^2.1.0",
+    "sqlite3": "^6.0.1",
     "unified": "^11.0.5",
     "validator": "^13.15.35"
   },

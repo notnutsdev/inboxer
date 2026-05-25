@@ -1,6 +1,9 @@
 const express = require("express")
 const route = express.Router()
 
+const sequelize = require("../models/connection");
+const Post = require("../models/posts");
+
 const { Webhook, MessageBuilder } = require("discord-webhook-node");
 
 process.loadEnvFile("./.env");
@@ -51,18 +54,26 @@ route.get(process.env.STAFF_LOGIN_URL + "/logout", (req, res) => {
     res.redirect("/");
 })
 
-route.get("/delete/:uid", (req, res) => {
+route.get("/delete/:uid", async (req, res) => {
     const uid = req.params.uid;
 
     if (!req.session.staff_login) {
         return res.redirect("/");
     }
     
-    const post = db.prepare("SELECT * FROM posts WHERE uid = ?", [ uid ]).all();
+    const new_post = await Post.findOne({
+        where: {
+            uid: uid
+        }
+    });
 
     if (!post) return req.redirect("/");
 
-    db.exec("DELETE FROM posts WHERE uid = ?", [ uid ]);
+    await Post.destroy({
+        where: {
+            uid: uid
+        }
+    });
 
     // Log everything to the webhook log channel
     const hook = new Webhook(process.env.STAFF_LOGS_WEBHOOK);

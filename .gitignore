@@ -8,4 +8,5 @@ db/database.db
 .env
 production.env
 
+# Config file
 config.json
