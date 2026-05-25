@@ -123,7 +123,7 @@ const extensions = {
                 const full_domain = findParentDomain(domain + "." + tld); // Finds the correct domain for the provided website
 
                 const embed_info = siteFormats[full_domain];
-                if (!embed_info) return `Embedding videos from ${domain}.${tld} is not yet supported.`; // Check that the provided URL is a supported site.
+                if (!embed_info) return `Embedding videos from ${domain}.${tld} is not yet supported. You can request this site to be added by <a is-safe="true" href="/contact?subject=Add embed support for: ${domain}.${tld}">clicking here.</a>`; // Check that the provided URL is a supported site.
                 
                 const embed_match = link.match(embed_info.regex); // the final match (the one from embed info containing the video ID).
                 if (!embed_match) return "Something unexpected happened while embedding your video.";

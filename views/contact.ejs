@@ -1,0 +1,27 @@
+<%- include("base/head", { title: "Contact" }) %>
+<body>
+    <%- include("base/nav") %>
+
+    <%- include('base/error') %>
+    <%- include('base/success') %>
+
+    <div class="wrapper">
+        <div id="report">
+            <form method="post">
+                <label for="report_post_id">Your email: </label>
+                <input type="email" name="email" id="email" placeholder="your@email.com">
+            
+                <label for="email">Subject: </label>
+                <input type="text" name="subject" id="subject" placeholder="Your message's subject here..." <% if (locals.subject) { %>value="<%= subject %>"<% } %>>
+
+                <label for="details">Message: </label>
+                <textarea name="message" id="details" placeholder="Additional details..."></textarea>
+            
+                <button type="submit" class="btn">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <%- include("base/footer") %>
+</body>
+</html>

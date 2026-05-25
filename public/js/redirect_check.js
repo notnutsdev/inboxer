@@ -11,6 +11,7 @@ for (let i = 0; i < links.length; i++) {
 
     // If the link is a reference to another element of the post (refers to another element's ID), don't add the redirect warning.
     if (target.match(/#\w+/g) && document.querySelector(`#content ${target}`)) continue;
+    if (elem.attributes['is-safe'].value == "true") continue; // if the link is marked as safe (this should be preferably for internal links only) skip it
 
     elem.addEventListener("click", e => {
         e.preventDefault();
