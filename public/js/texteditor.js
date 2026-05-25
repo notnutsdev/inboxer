@@ -124,7 +124,7 @@ controls.forEach(elem => elem.addEventListener("click", e => {
             });
             break;
         case "video":
-            createInputDialog({ title: "Enter your video URL", placeholder: "Enter your URL here..." }, src => {
+            createInputDialog({ title: "Enter a direct video URL", placeholder: "Enter your URL here..." }, src => {
                 new_pos_all = `${content.before}\n?(video){${src}}`;
                 textarea.value = `${content.before}\n?(video){${src}}\n${content.after}`;
             });
@@ -133,6 +133,12 @@ controls.forEach(elem => elem.addEventListener("click", e => {
             createInputDialog({ title: "Enter your language (py, js, c...)", placeholder: "Enter your language..." }, language => {
                 new_pos_all = `${content.before}\n\`\`\`${language}\n`.length;
                 textarea.value = `${content.before}\n\`\`\`${language}\n\n\`\`\`\n${content.after}`;
+            });
+            break;
+        case "embed":
+            createInputDialog({ title: "Enter your video URL", placeholder: "Enter your URL..." }, embed_url => {
+                new_pos_all = `${content.before}\n^^${embed_url}^^\n`.length;
+                textarea.value = `${content.before}\n^^${embed_url}^^\n${content.after}`;
             });
             break;
     }

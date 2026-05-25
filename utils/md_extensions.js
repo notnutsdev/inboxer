@@ -2,6 +2,23 @@
 const validator = require("validator");
 const ejs = require("ejs");
 const hljs = require("highlight.js");
+// Site regex and formats used by the videoEmbed block
+const siteFormats = require("./sites_embed");
+
+// Utility functions
+// For websites that change domains very often, find the parent domain (example: m1xdrop.click is just mixdrop.ag's video domain, but they rotate every week)
+const parentDomains = {
+    "mixdrop.ag": ["m1xdrop.click"]
+}
+const findParentDomain = domain => {
+    for (const [key, value] of Object.entries(parentDomains)) {
+        // If the domain is found in the parenDomains dict, return the parent domain
+        if (value.indexOf(domain) > -1) {
+            return key
+        }
+    }
+    return domain
+}
 
 const extensions = {
     hrTag: {
@@ -89,23 +106,7 @@ const extensions = {
 
             // Regex for all sites
             // https:\/\/((?<subdomain>[a-z]*)\.)?(?<domain>[a-z]*)\.(?<tld>[a-z]{1,3})\/(?<url>\S*)
-            const sitesRegex = /https:\/\/(?<link>((?<subdomain>[a-z]*)\.)?(?<domain>[a-z]*)\.(?<tld>[a-z]{1,3})\/(?<url>\S*))/;
-
-            // How each supported site's embed URL should look like
-            // Every {@video_id} will be replaced by the video ID.
-            // hasPopups indicates to the site if a warning should be shown when showing a iframe with this.
-            const siteFormats = {
-                "youtube": {
-                    regex: /(www\.(?<domain>youtube\.com)\/watch\?v=(?<video_id>[a-zA-Z0-9]{6,}))/,
-                    format: "https://www.youtube.com/embed/{@video_id}",
-                    hasPopups: false
-                },
-                "abyssplayer": {
-                    regex: /((?<domain>abyssplayer\.com)\/(?<video_id>\S{6,}))/,
-                    format: "https://abyssplayer.com/{@video_id}",
-                    hasPopups: true
-                }
-            }
+            const sitesRegex = /https:\/\/(?<link>((?<subdomain>[a-z0-9]*)\.)?(?<domain>[a-z0-9]*)\.(?<tld>[a-z]{1,10})\/(?<url>\S*))/;
 
             return text.replace(regex, (match, embed_url) => {
                 embed_url = validator.unescape(embed_url); // unescape the url
@@ -119,17 +120,31 @@ const extensions = {
                 const domain = matches.groups.domain; // the domain of the attempted URL embed
                 const tld = matches.groups.tld; // the domain tld
                 const link = matches.groups.link; // the link of the embed, without https://
+                const full_domain = findParentDomain(domain + "." + tld); // Finds the correct domain for the provided website
 
-                const embed_info = siteFormats[domain];
-                if (!embed_info) return "Embedding videos from this site is not yet supported."; // Check that the provided URL is a supported site.
+                const embed_info = siteFormats[full_domain];
+                if (!embed_info) return `Embedding videos from ${domain}.${tld} is not yet supported.`; // Check that the provided URL is a supported site.
+                
+                const embed_match = link.match(embed_info.regex); // the final match (the one from embed info containing the video ID).
+                if (!embed_match) return "Something unexpected happened while embedding your video.";
 
-                const embed_match = link.match(embed_info.regex);
-                console.log(link, embed_match)
                 const video_id = embed_match.groups.video_id;
-
+                const clean_link = embed_match.groups.clean_link; // Final URL, without URL params or anything else.
                 if (!video_id) return "Invalid URL format.";
 
-                return `<div style="max-width: 600px;"><div class="iframe-container"><iframe width="420" height="345" src="${embed_info.format.replace("{@video_id}", video_id)}" has-popups="${embed_info.hasPopups}">Your browser does not support iframes.</iframe></div><div class="iframe-info">External video embeded from <a href="${embed_url}">${domain}.${tld}</a></div></div>`
+                // NSFW content warning
+                let nsfw_warning_div = "";
+                if (embed_info.isNSFW) {
+                    nsfw_warning_div = `<div class="content_warning"><h1>NSFW Content Warning</h1><p>This embedded video comes from a Not Safe For Work source.</p><button class="btn" onclick="this.parentElement.parentElement.removeChild(this.parentElement)">See content</button></div>`
+                }
+
+                // Popup warning
+                let popup_warning_div = "";
+                if (embed_info.hasPopups) {
+                    popup_warning_div = `<div class="content_warning popup_warning"><h1>Warning</h1><p>This embed contains popups ads. We don't control any of these ads. Be careful when clicking and close any page that opens in another tab.</p><button class="btn btn-close" onclick="this.parentElement.parentElement.removeChild(this.parentElement)">I understand</button></div>`
+                }
+
+                return `<div class="embed_container">${nsfw_warning_div}${popup_warning_div}<div class="iframe-container"><iframe width="420" height="345" src="${embed_info.format.replace("{@video_id}", video_id)}">Your browser does not support iframes.</iframe></div><div class="iframe-info">External video embeded from <a href="https://${clean_link}">${domain}.${tld}</a></div></div>`
             })
         }
     }
