@@ -9,7 +9,8 @@ Anonymous text sharing platform, with style.
 
 ## Planned features
 - [x] Text editor with buttons
-- [ ] Edit posts
+- [ ] User accounts
+- [ ] Edit/delete posts
 - [ ] More formatters
 
 ## This site uses:

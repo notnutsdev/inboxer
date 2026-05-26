@@ -82,7 +82,7 @@ app.post("/create", async (req, res) => {
 
 app.get('/post/:uid', async (req, res) => {
     const uid = req.params.uid;
-    // DEPRECATE
+    
     const post = await Post.findOne({
         where: {
             uid: uid
