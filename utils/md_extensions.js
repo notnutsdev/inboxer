@@ -8,7 +8,8 @@ const siteFormats = require("./sites_embed");
 // Utility functions
 // For websites that change domains very often, find the parent domain (example: m1xdrop.click is just mixdrop.ag's video domain, but they rotate every week)
 const parentDomains = {
-    "mixdrop.ag": ["m1xdrop.click"]
+    "mixdrop.ag": ["m1xdrop.click"],
+    "doodstream.com": ["playmogo.com"]
 }
 const findParentDomain = domain => {
     for (const [key, value] of Object.entries(parentDomains)) {

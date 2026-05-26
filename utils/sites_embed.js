@@ -23,7 +23,7 @@ module.exports = {
 
     // Music embeds
     "spotify.com": {
-        regex: /(?<clean_link>(?<domain>open\.spotify\.com)\/track\/(?<video_id>\S{1,40}))/,
+        regex: /(?<clean_link>(?<domain>open\.spotify\.com)(\/[a-z\-]{1,10})?\/track\/(?<video_id>\S{1,40}))/,
         format: "https://open.spotify.com/embed/track/{@video_id}"
     },
     "soundcloud.com": {
@@ -46,11 +46,41 @@ module.exports = {
         format: "https://mixdrop.top/e/{@video_id}",
         hasPopups: true
     },
+    "vidara.so": {
+        regex: /(?<clean_link>(?<domain>vidara\.so)\/v\/(?<video_id>[a-zA-Z0-9]{1,35}))/,
+        format: "https://vidara.so/e/{@video_id}",
+        hasPopups: true
+    },
+    "doodstream.com": {
+        regex: /(?<clean_link>(?<domain>[a-z0-9]{1,25}\.[a-z]{1,10})\/(e|d)\/(?<video_id>[a-zA-Z0-9]{1,35}))/,
+        format: "https://doodstream.com/e/{@video_id}",
+        hasPopups: true
+    },
 
     // nsfw sites
     "tube8.com": {
         regex: /(?<clean_link>(www\.)?(?<domain>tube8\.com)\/porn-video\/(?<video_id>[0-9]{1,25}))/,
         format: "https://www.tube8.com/embed/{@video_id}",
+        isNSFW: true
+    },
+    "pornhub.com": {
+        regex: /(?<clean_link>(www\.)?(?<domain>pornhub\.com)\/view_video\.php\?viewkey=(?<video_id>[a-zA-Z0-9]{1,35}))/,
+        format: "https://www.pornhub.com/embed/{@video_id}",
+        isNSFW: true
+    },
+    "xnxx.com": {
+        regex: /(?<clean_link>(www\.)?(?<domain>xnxx\.com)\/video-(?<video_id>[a-zA-Z0-9]{1,35}))/,
+        format: "https://www.xnxx.com/embedframe/{@video_id}",
+        isNSFW: true
+    },
+    "xvideos.com": {
+        regex: /(?<clean_link>(www\.)?(?<domain>xvideos\.com)\/video\.(?<video_id>[a-zA-Z0-9]{1,35}))/,
+        format: "https://www.xvideos.com/embedframe/{@video_id}",
+        isNSFW: true
+    },
+    "xhamster.com": {
+        regex: /(?<clean_link>(?<domain>xhamster\.com)\/videos\/(.+)\-(?<video_id>[a-zA-Z0-9]{1,35}))/,
+        format: "https://xhamster.com/embed/{@video_id}",
         isNSFW: true
     }
 }
