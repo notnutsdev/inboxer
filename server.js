@@ -22,6 +22,7 @@ process.loadEnvFile("./.env");
 
 // Routers
 const staffRoutes = require("./routes/staff");
+const authRoutes = require("./routes/auth");
 
 // Setting ejs as our view engine
 app.set("view engine", "ejs");
@@ -38,6 +39,7 @@ app.use(session({
 
 // Registering routers
 app.use("/", staffRoutes)
+app.use('/auth', authRoutes);
 
 // Locals/Global variables
 app.locals = config.locals;
@@ -183,6 +185,17 @@ app.route("/contact")
     .catch(() => { return res.render("contact.ejs", { error: "An error occured while sending your request. Our systems might be overwelhmed. Please try again later or contact us on Discord." })});
 
     res.render("contact.ejs", { success: "You message was sent to our teams. You'll receive a reply to your email as soon as we get to you." })
+})
+
+// Logout the user
+app.get("/logout", (req, res) => {
+    if (!req.session.is_logged_in) {
+        return res.redirect("/");
+    }
+
+    req.session.is_logged_in = false;
+    delete req.session.user;
+    res.render("blank.ejs", { success: "Successfully logged you out!" })
 })
 
 // Bonus pages

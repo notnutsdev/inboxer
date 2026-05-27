@@ -9,7 +9,7 @@
     <% if (!locals.success) { %>
         <div class="wrapper">
             <div class="container pixel-border form-container text-center">
-                <h2>Sign in</h2>
+                <h2>Create an account</h2>
 
                 <form method="post">
                     <label for="username">Username</label>
@@ -18,7 +18,14 @@
                     <label for="password">Password</label>
                     <input style="margin-top: 10px" type="password" name="password" id="password" placeholder="Password here"><br>
                     
-                    <button class="btn" type="submit" style="margin-top: 10px">Sign in</button>
+                    <button class="btn" type="submit" style="margin-top: 10px">Register</button>
+                </form>
+
+                <p>or</p>
+
+                <h2>Create a <a href="#">anonymous account</a></h2>
+                <form method="post">
+                    <button class="btn" name="anonymous_account" type="submit">Create</button>
                 </form>
             </div>
         </div>

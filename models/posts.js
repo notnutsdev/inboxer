@@ -1,24 +1,26 @@
 const { Sequelize, Model, DataTypes } = require("sequelize");
 const sequelize = require("./connection");
 
+const User = require("./users");
+
 const Post = sequelize.define("posts", {
     uid: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true
     },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+
+        references: {
+            model: User,
+            key: "uid"
+        }
     },
     content: {
         type: DataTypes.TEXT,
         allowNull: false
-    },
-    permissions: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
     }
 
     /* Permissions here is what the post can show.
