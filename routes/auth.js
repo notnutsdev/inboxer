@@ -68,7 +68,7 @@ router.route("/register")
         }
 
         // Check if username is already in use
-        const user_exists = await User.findOne({ where: { username: username, group: { [Op.gte]: 0 }}}) // find if a user (with a group greater than 0, as 0 (throwaway) accounts can have duplicate usernames) as the same username
+        const user_exists = await User.findOne({ where: { username: username, group: { [Op.gt]: 0 }}}) // find if a user (with a group greater than 0, as 0 (throwaway) accounts can have duplicate usernames) as the same username
         
         if (user_exists) {
             return res.render("register.ejs", { error: "User with that username already exists." })

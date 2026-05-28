@@ -262,8 +262,8 @@ app.get("/delete/:uid", async (req, res) => {
     .setColor("#fff")
     .addField("Post ID", `\`${uid}\``)
     .addField("Action", "Deletion")
-    .addField("Post Author", `\`${post[0].username}\``)
-    .addField("Original content", `\`\`\`${post[0].content}\`\`\``)
+    .addField("Post Author", `\`${post.user.username}\``)
+    .addField("Original content", `\`\`\`${post.content}\`\`\``)
     .setTimestamp();
     hook.send(embed);
 
