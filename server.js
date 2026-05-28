@@ -5,6 +5,7 @@ const app = express();
 const sequelize = require("./models/connection");
 const initModels = require("./models/init");
 const Post = require("./models/posts");
+const User = require("./models/users");
 
 const showdown = require("showdown");
 const md_ext = require("./utils/md_extensions");
@@ -21,7 +22,6 @@ const { Webhook, MessageBuilder } = require("discord-webhook-node");
 process.loadEnvFile("./.env");
 
 // Routers
-const staffRoutes = require("./routes/staff");
 const authRoutes = require("./routes/auth");
 
 // Setting ejs as our view engine
@@ -38,32 +38,42 @@ app.use(session({
 }))
 
 // Registering routers
-app.use("/", staffRoutes)
 app.use('/auth', authRoutes);
 
 // Locals/Global variables
 app.locals = config.locals;
 
 app.get("/", async (req, res) => {
-    const posts = await Post.findAll({ order: sequelize.random(), limit: 5 });
-    res.render("index.ejs", { posts: posts });
+    User.hasMany(Post, {foreignKey: 'user_id'})
+    Post.belongsTo(User, {foreignKey: 'user_id'})
+
+    const posts = await Post.findAll({
+        order: sequelize.random(),
+        limit: 5,
+        include: [{
+            model: User,
+            required: true
+        }]
+    });
+
+    res.render("index.ejs", { posts: posts, user: req.session.user });
 })
 
 app.get('/create', (req, res) => {
-    res.render("create.ejs");
+    res.render("create.ejs", { user: req.session.user });
 })
 
 app.post("/create", async (req, res) => {
-    const username = req.body.username;
+    let user_id;
     let content = req.body.content;
 
-    if (!username) {
-        return res.render("create.ejs", { error: "Please enter a username" })
-    } else if (!content) {
+    // Guards
+    if (!content) {
         return res.render("create.ejs", { error: "Please enter some content." })
     }
-
-    if (username.length > 100) return res.render("create.ejs", { error: "Username too long." });
+    if (content.length < 5) {
+        return res.render("create.ejs", { error: "Please enter more than 5 characters in the content field." })
+    }
 
     for (let i = 0; i< banned_words.length; i++) {
         const word = banned_words[i];
@@ -72,12 +82,27 @@ app.post("/create", async (req, res) => {
         }
     }
 
+    // For logged in users
+    if (req.session.user) {
+        user_id = req.session.user.uid;
+    } /* For throwaway users */ else {
+        const username = req.body.username;
+
+        if (!username) {
+            return res.render("create.ejs", { error: "Please enter a username" })
+        }
+        if (username.length > 100) return res.render("create.ejs", { error: "Username too long." });
+
+        const user = await User.create({ username: username, creation_date: Math.floor(Date.now()/1000), group: 0 });
+        user_id = user.uid;
+    }
+
     const uuid = crypto.randomUUID();
 
     content = converter.makeHtml(validator.escape(content));
 
     // Adding the record to the database
-    const post = await Post.create({ uid: uuid, username: validator.escape(username), content: content, permissions: 0 });
+    const post = await Post.create({ uid: uuid, user_id: user_id, content: content });
 
     res.redirect("/post/" + uuid);
 })
@@ -85,22 +110,27 @@ app.post("/create", async (req, res) => {
 app.get('/post/:uid', async (req, res) => {
     const uid = req.params.uid;
     
+    User.hasMany(Post, {foreignKey: 'user_id'})
+    Post.belongsTo(User, {foreignKey: 'user_id'})
+
     const post = await Post.findOne({
         where: {
             uid: uid
-        }
+        },
+        include: [{
+            model: User,
+            required: true
+        }]
     });
 
     if (!post) {
         return res.render("view.ejs", { error: "No post found for this ID." });
     }
 
-    let isStaff = false;
-    if (req.session.staff_login) {
-        isStaff = true;
-    }
+    // Delete the user password
+    delete post.dataValues.user.dataValues.password;
 
-    res.render("view.ejs", { post: post, isStaff: isStaff });
+    res.render("view.ejs", { post: post.dataValues, author: post.dataValues.user.dataValues, user: req.session.user });
 })
 
 app.get("/random", async (req, res) => {
@@ -185,6 +215,59 @@ app.route("/contact")
     .catch(() => { return res.render("contact.ejs", { error: "An error occured while sending your request. Our systems might be overwelhmed. Please try again later or contact us on Discord." })});
 
     res.render("contact.ejs", { success: "You message was sent to our teams. You'll receive a reply to your email as soon as we get to you." })
+});
+
+// Delete a post
+app.get("/delete/:uid", async (req, res) => {
+    const uid = req.params.uid;
+
+    if (!req.session.user) {
+        return res.redirect("/");
+    }
+    
+    // Fix DRY here
+    User.hasMany(Post, {foreignKey: 'user_id'})
+    Post.belongsTo(User, {foreignKey: 'user_id'})
+    ///////////////
+
+    const post = await Post.findOne({
+        where: {
+            uid: uid
+        },
+        include: [{
+            model: User,
+            required: true
+        }]
+    });
+
+
+    if (!post) return req.redirect("/");
+
+    // If the user isn't the post author and isn't a mod/admin
+    if (post.user.uid != req.session.user.uid && req.session.user.group < 3) {
+        return res.redirect("/");
+    }
+
+    await Post.destroy({
+        where: {
+            uid: uid
+        }
+    });
+
+    // Log everything to the webhook log channel
+    const hook = new Webhook(process.env.STAFF_LOGS_WEBHOOK);
+    const embed = new MessageBuilder()
+    .setAuthor(`Action taken by: ${req.session.user.username}`)
+    .setTitle("Post deleted")
+    .setColor("#fff")
+    .addField("Post ID", `\`${uid}\``)
+    .addField("Action", "Deletion")
+    .addField("Post Author", `\`${post[0].username}\``)
+    .addField("Original content", `\`\`\`${post[0].content}\`\`\``)
+    .setTimestamp();
+    hook.send(embed);
+
+    return res.render("blank.ejs", { success: "Deleted post with ID: " + uid });
 })
 
 // Logout the user

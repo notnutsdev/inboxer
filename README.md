@@ -1,6 +1,9 @@
 # ![logo](./public/img/logo.png) Inboxer
 Anonymous text sharing platform, with style.
 
+## Dev branch todo list:
+- [ ] User profile pages
+
 ## Features
 - Markdown posts
 - Report system
@@ -32,4 +35,4 @@ Anonymous text sharing platform, with style.
 ## Selfhosting
 Run `npm install`
 Then, to start a server, run `node server.js` or `nodemon server.js` if running for development purposes.
-**Sample Database provided in the /db folder.**
+**Sample Database provided in the /db folder. Default admin password: `password1!`**

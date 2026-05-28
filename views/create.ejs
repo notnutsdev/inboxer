@@ -10,11 +10,13 @@
             <h2>Create a new post</h2>
 
             <form action="/create" method="post" id="create">
-                <label for="username">Your username</label>
-                <input type="text" name="username" id="username" placeholder="Username here">
-                
-                <label for="content">Content</label>
+                <% if (!locals.user) { %>
+                    <label for="username">Your username</label>
+                    <input type="text" name="username" id="username" placeholder="Username here">
 
+                    <label for="content">Content</label> <%# since there's only one field for registered users, the label is useless %>
+                <% } %>
+                
                 <div style="width: 80%">
                     <%# Text editor bar %>
                     <div id="editor_bar">

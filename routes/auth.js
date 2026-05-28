@@ -8,18 +8,18 @@ const User = require("../models/users");
 
 router.use((req, res, next) => {
     if (req.session.is_logged_in) {
-        res.redirect("/");
+        return res.redirect("/");
     }
 
     next();
-})
+});
 
 router.route("/register")
 .get((req, res) => {
     return res.render("register.ejs");
 })
 .post(async (req, res) => {
-    const timestamp = Date.now() * 1000;
+    const timestamp = Math.floor(Date.now()/1000);
     const salt_rounds = 10; // for bcrypt
 
     let username;
@@ -33,7 +33,7 @@ router.route("/register")
         // find a unique username for the anon user
         while (true) {
             username = "Anon_" + Math.ceil(Math.random() * 99999999).toString();
-            const user_exists = await User.findOne({ where: { username: username }});
+            const user_exists = await User.findOne({ where: { username: username, group: { [Op.gt]: 0 } }}); // skip throwaway accounts
             
             if (!user_exists) {
                 break;
@@ -54,17 +54,17 @@ router.route("/register")
         password = req.body.password;
 
         if (!username || !password) {
-            return res.render("register.ejs", { error: "Please fill out all the form fields." })
+            return res.render("register.ejs", { error: "Please fill out all the form fields." });
         }
 
         if (!username.match(username_regex)) {
-            return res.render("register.ejs", { error: "Usernames can only contain letters, numbers, underscores (_) and hyphens (-)." })
+            return res.render("register.ejs", { error: "Usernames can only contain letters, numbers, underscores (_) and hyphens (-)." });
         }
 
         // Check password strength
         const password_strength_regex = /^(?=.*[?!.*%$£+=@&])(?=.*[0-9])(?=.*[a-zA-Z]).{5,15}$/g;
         if (!password.match(password_strength_regex)) {
-            return res.render("register.ejs", { error: "Password is too weak. Please provide a password with at least one number and one special character (?!.*%$£+=@&)" })
+            return res.render("register.ejs", { error: "Password is too weak. Please provide a password with at least one number and one special character (?!.*%$£+=@&)" });
         }
 
         // Check if username is already in use
@@ -79,20 +79,19 @@ router.route("/register")
     const password_hash = await bcrypt.hash(password, salt_rounds);
 
     const user = await User.create({ username: username, password: password_hash, creation_date: timestamp, group: user_group });
-    delete user.password; // so that it doesn't get stored in session
+    delete user.dataValues.password; // removing password from user object so that it doesn't get added to the session
 
     req.session.is_logged_in = true;
     req.session.user = user;
 
-    ////// FIXME
     if (user_group == 1) {
-        const account_end_date = new Date(timestamp + 7 * 24 * 60 * 60 * 1000) // The timestamp of the end of the account (7 days later)
+        const account_end_date = new Date((timestamp + (7 * 24 * 60 * 60)) * 1000).toString(); // The timestamp of the end of the account (7 days later)
         return res.render('blank.ejs', {
             success: `New anonymous account created!<br>Your account will be active until the: <b>${account_end_date}</b><br>You account username is: <code>${username}</code><br>Your account password is: <code>${password}</code>`
         });
     }
 
-    return res.send('hsdq');
+    return res.render("blank.ejs", { success: "Account successfully created!" });
 });
 
 router.route("/login")
@@ -107,10 +106,14 @@ router.route("/login")
         return res.render("login.ejs", { error: "Please enter a username/password." });
     }
 
-    const user = await User.findOne({ where: { username: username } });
+    const user = await User.findOne({ where: { username: username, group: { [Op.gt]: 0 } } });
 
     if (!user) {
         return res.render("login.ejs", { error: "User not found." });
+    }
+
+    if (user.group == 1 && user.creation_date + (7 * 24 * 60 * 60) <= Math.floor(Date.now()/1000)) {
+        return res.render("login.ejs", { error: "This anon account has expired. You can still create a new one." });
     }
 
     // Check password hash
@@ -120,7 +123,7 @@ router.route("/login")
         return res.render("login.ejs", { error: "Invalid password." })
     };
 
-    delete user.password; // so that it doesn't get stored in session
+    delete user.dataValues.password; // removing password from user object so that it doesn't get added to the session
     req.session.is_logged_in = true;
     req.session.user = user;
 

@@ -3,20 +3,39 @@
     <%- include("base/nav") %>
     <%- include("base/announcement") %>
 
-    <div style="text-align: center; margin-top: 25px">
-        <a href="/create"><button class="btn" style="max-width: 200px; padding: 0px 5px;">Create a post</button></a>
-    </div>
-
     <div style="display: flex; justify-content: center;">
     <div style="display: flex; flex-direction: column; align-items: start; gap: 25px; padding: 20px 5px; padding-top: 10px;">
+
+        <% if (locals.user) { %>
+            <div class="user_controls">
+                <a href="/create" style="flex-grow: 1"><button class="btn" style="max-width: 200px; padding: 0px 5px;">Create a post</button></a>
+                <div class="flex align-items-center gap-5">
+                    <a class="group-<%= user.group %>" href="/user/<%= user.username %>"><%= user.username %></a>
+                    <a href="/logout"><img src="/img/logout.png" height="20px"></a>
+                </div>
+            </div>
+        <% } else { %>
+            <div style="align-self: center; margin-top: 25px">
+                <a href="/create"><button class="btn" style="max-width: 200px; padding: 0px 5px;">Create a post</button></a>
+            </div>
+
+            <div class="pixel-container">
+                <div class="before flex align-items-center" style="background-color: rgb(231, 187, 105);">
+                    <img src="/img/info.png" height="15px" style="opacity: 0.5; margin-right: 5px">
+                    <div>Seems like you aren't logged in. <a href="/auth/login" class="regular">Log in</a> or <a href="/auth/register" class="regular">sign up</a> today!</div>
+                </div>
+
+                <div class="after"></div>
+            </div>
+        <% } %>
         
         <div id="posts">
-            <h2>Random posts</h2>
+            <h2 style="margin-top: 0px;">Random posts</h2>
 
             <% for (let i = 0; i < posts.length; i++) { %>
                 <% const elem = posts[i]; %>
                 <div>
-                    > <a href="/post/<%- elem.uid %>" class="regular"><%- elem.uid %></a> by <% if (elem.permissions >= 1) { %><%- elem.username %><% } else { %><%= elem.username %><% } %>
+                    > <a href="/post/<%- elem.uid %>" class="regular"><%- elem.uid %></a> by <%- include("components/username_span", { author: elem.user }) %>
                 </div>
             <% } %>
         </div>

@@ -36,10 +36,12 @@
         <div id="post_data">
             <div id="post_id" class="text-center">Post ID: <span class="pixel-box"><%= post.uid %></span></div>
 
-            <div id="username" class="text-center">Posted by: <span class="pixel-box"><% if (post.permissions >= 1) { %><%- post.username %><% } else { %><%= post.username %><% } %></span></div>
+            <div id="username" class="text-center">Posted by: <a href="<% if (author.group == 0) { %>/throwaway<% } else { %>/user/<%= author.username %><% } %>" class="pixel-box">
+                <%- include("components/username_span", { author: locals.author }) %>
+            </a></div>
             
             <%# show the delete button for staff members %>
-            <% if (locals.isStaff == true) { %>
+            <% if ((locals.user && locals.user.group >= 3) || (locals.user && locals.user.uid == author.uid)) { %>
                 <div style="display: flex; justify-content: center;">
                     <a href="/delete/<%= post.uid %>"><button class="btn btn-danger">Delete post</button></a>
                 </div>

@@ -2,9 +2,12 @@
     "site_name": "Inboxer",
 
     "urls": {
-        "formatting": "ca04eaab-ffef-4515-a820-32368c626ac5",
-        "rules": "64a19bef-7de5-4e21-a4e3-f1e576d0a3ed",
-        "socials": "0c1994bf-49f5-43fa-b1a2-7cecf872ddee"
+        "formatting": "e9618187-0aba-496d-984b-2f669b4e94c9",
+        "rules": "aac48a76-9c36-4251-8e21-771968783694",
+        "socials": "3de37b2a-8292-4831-9d96-cc8336a3892b",
+        "throwaway": "3a4a66bb-49c6-4a9b-b6ca-6dbff1e45ab2",
+        "anon": "b89e3103-5611-4752-8f92-546a5600dd30",
+        "embed-support": "cecf110e-dc4f-47da-8aad-a95ea7500890"
     },
 
     "libraries": {

@@ -2,6 +2,7 @@ const { Sequelize, Model, DataTypes } = require("sequelize");
 const sequelize = require("./connection");
 
 const Group = require("./groups");
+const Post = require("./posts");
 
 const User = sequelize.define("users", {
     uid: {
@@ -16,7 +17,7 @@ const User = sequelize.define("users", {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true // throwaway accounts don't have a password
     },
     // Unix timestamp
     creation_date: {

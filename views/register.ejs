@@ -1,4 +1,4 @@
-<%- include("base/head", { title: "Staff Login" }) %>
+<%- include("base/head", { title: "Register" }) %>
 
 <body>
     <%- include("base/nav") %>
@@ -13,7 +13,8 @@
 
                 <form method="post">
                     <label for="username">Username</label>
-                    <input type="text" name="username" id="username" placeholder="Username here"><br>
+                    <input type="text" name="username" id="username" placeholder="Username here" indicator-data="Pick wisely; you can't change it afterwards!"><br>
+                    <%# <span class="secondary-text opacity-75" style="margin: 5px 0px 7px 0px"><img src="/img/info.png" height="13px" style="opacity: 0.5; margin-right: 3px"> Pick wisely; you can't change it afterwards!</span><br> %>
                     
                     <label for="password">Password</label>
                     <input style="margin-top: 10px" type="password" name="password" id="password" placeholder="Password here"><br>
@@ -23,14 +24,18 @@
 
                 <p>or</p>
 
-                <h2>Create a <a href="#">anonymous account</a></h2>
+                <h2>Create an <a href="/anon" class="regular">anonymous account</a></h2>
                 <form method="post">
                     <button class="btn" name="anonymous_account" type="submit">Create</button>
                 </form>
+
+                <div class="opacity-75 auth-form-footer">Already have an account? <a class="regular" href="/auth/login">Login here.</a></div>
             </div>
         </div>
     <% } %>
 
     <%- include("base/footer") %>
+
+    <script src="/js/input_indicator.js" type="module" defer></script>
 </body>
 </html>

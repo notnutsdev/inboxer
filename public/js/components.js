@@ -53,3 +53,18 @@ export const createCloseBtn = () => {
     closeBtn.id = "overlay_close";
     return closeBtn
 }
+
+//// Input indicator
+// Little black box over a form with info
+// For input must have the indicator-content attribute with valid HTML
+
+export const createInputIndicator = elem => {
+    const indicator = document.createElement("div");
+    indicator.classList.add("input-indicator");
+
+    indicator.style.left = elem.offsetLeft + "px";
+    indicator.style.top = elem.offsetTop - 25 + "px";
+    indicator.innerHTML = elem.attributes["indicator-data"].value;
+
+    return indicator;
+}
