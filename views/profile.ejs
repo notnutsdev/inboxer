@@ -1,0 +1,43 @@
+<% if (locals.error) { %>
+    <%- include("base/head", { title: "Error" }) %>
+<% } else { %>
+    <%- include("base/head", { title: `User - ${locals.user.username}` }) %>
+<% } %>
+
+<body>
+    <%- include("base/nav") %>
+
+    <%- include('base/error') %>
+
+    <div class="flex justify-content-center" style="width: 100%;">
+    <div style="max-width: 500px; width: 100%">
+        <div>
+            <h2 style="margin-top: 30px;">User Profile</h2>
+            <h2><%- include("components/username_span", { author: locals.user }) %></h2>
+        </div>
+
+        <% if (locals.posts) { %>
+            <h3>Posts:</h3>
+            <div class="post-list">
+                <% posts.forEach(value => { %>
+                    <span>> <a href="/post/<%= value.uid %>" class="regular"><%= value.uid %></a></span>
+                <% }) %>
+            </div>
+
+            <%# pagination buttons %>
+            <div class="btn-row" style="padding: 10px">
+                <% if (page-1 > 0) { %>
+                    <a href="/user/<%= user.username %>?page=<%= page-1 %>" class="btn"><%= page-1 %></a>
+                <% } %>
+                <button class="btn"><%= page %></button>
+                <% if (page+1 <= total_pages) { %>
+                    <a href="/user/<%= user.username %>?page=<%= page+1 %>" class="btn"><%= page+1 %></a>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+    </div>
+
+    <%- include("base/footer") %>
+</body>
+</html>

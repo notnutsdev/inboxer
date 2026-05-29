@@ -516,6 +516,19 @@ textarea {
 	margin-top: 0px;
 }
 
+.no-margin-left {
+	margin-left: 0px;
+}
+
+.no-margin-right {
+	margin-right: 0px;
+}
+
+.no-margin-left-right {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
 /* Opacity classes */
 .opacity-75 {
 	opacity: 0.5
@@ -744,4 +757,10 @@ textarea#content {
 
 .auth-form-footer {
 	margin-top: 20px
+}
+
+/* User profile page */
+.post-list {
+	display: flex;
+	flex-direction: column;
 }
