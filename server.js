@@ -364,6 +364,13 @@ app.get("/libraries/:file", (req, res) => {
     res.sendFile(__dirname + fp);
 })
 
+
+// Error handlers
+app.use((req, res) => {
+    // 404 page
+    res.status(404).render("error_page.ejs", { status: 404, message: "Seems like you got lost. This page doesn't exist" });
+})
+
 // TODO: have routers instead of one big file
 
 app.listen(8000, () => {

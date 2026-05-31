@@ -1,7 +1,12 @@
 <div class="wrapper">
     <div id="nav">
         <a href="/" style="display: flex; align-items: center; gap: 10px;">
-            <img src="/img/logo.png" height="32px">
+            <%# show_error_logo displays a variant of the mailman where he has x in his eyes, good for error pages %>
+            <% if (locals.show_error_logo) { %>
+                <img src="/img/mailman/dead.png" height="32px">
+            <% } else { %>
+                <img src="/img/logo.png" height="32px">
+            <% } %>
             <h1>Inboxer</h1>
         </a>
 

@@ -1,0 +1,25 @@
+<%# Used for HTTP errors (404, 500, etc) %>
+<%- include("base/head", { title: status }) %>
+
+<body>
+    <%- include("base/nav", { show_error_logo: true }) %>
+
+    <%- include('base/error') %>
+    <%- include('base/success') %>
+
+
+    <div class="text-center flex" style="flex-direction: column; gap: 20px; margin-top: 30px">
+        <div>
+            <img src="/img/mailman/dead.png" alt="dead_mailman" srcset="" height="35px" width="35px"> <%# make a new icon and change this %>
+        </div>
+
+        <h1 style="margin: 0px"><%- status %></h1> <%# status code (eg: 404) %>
+
+        <div><%- message %></div> <%# bonus message to indicate what the error means to the user %>
+
+        <div><a href="/" class="btn">Go back home</a></div>
+    </div>
+
+    <%- include("base/footer") %>
+</body>
+</html>
