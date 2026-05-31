@@ -19,7 +19,7 @@ const banned_words = require("./banned_words.json");
 const { Webhook, MessageBuilder } = require("discord-webhook-node");
 
 const fs = require("node:fs");
-const username_regex = require("./utils/username_regex");
+const validation = require('./utils/validation'); // internal validation utility (This is NOT the validator package)
 
 
 // Loading environment variables
@@ -106,7 +106,7 @@ app.post("/create", async (req, res) => {
             return res.render("create.ejs", { error: "Please enter a username" })
         }
         if (username.length > 30) return res.render("create.ejs", { error: "Username too long." });
-        if (!username.match(username_regex)) return res.render("create.ejs", { error: "Username can only contain letters (a-z), numbers and underscores." })
+        if (!validation.isValidUsername(username)) return res.render("create.ejs", { error: "Username can only contain letters (a-z), numbers and underscores." })
 
         const user = await User.create({ username: username, creation_date: Math.floor(Date.now()/1000), group: 0 });
         user_id = user.uid;

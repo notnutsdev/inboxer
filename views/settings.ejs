@@ -7,13 +7,22 @@
     <%- include('base/success') %>
 
     <div class="wrapper">
-        <div class="grid-3" style="max-width: 750px">
+        <div style="max-width: 750px">
+        <h1>User settings</h1>
+
+        <div class="grid-3">
             <div class="pixel-container">
                 <div class="before secondary-color-bg">
                     <h3>Change password</h3>
+                    <form style="display: flex; gap: 10px; flex-direction: column;" method="post">
+                        <input type="password" name="current_password" placeholder="Current password"> 
+                        <input type="password" name="new_password" placeholder="New password">
+                        <button type="submit" class="btn btn-secondary" name="change_password">Change password</button>
+                    </form>
                 </div>
                 <div class="after"></div>
             </div>
+        </div>
         </div>
     </div>
 

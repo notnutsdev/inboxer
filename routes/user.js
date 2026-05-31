@@ -4,6 +4,11 @@ const router = express.Router();
 
 const Post = require("../models/posts");
 const User = require("../models/users");
+const bcrypt = require("bcrypt");
+
+const { Op } = require("sequelize");
+
+const validation = require('../utils/validation');
 
 // User profile page
 router.get("/user/:username", async (req, res) => {
@@ -21,7 +26,10 @@ router.get("/user/:username", async (req, res) => {
 
     const user = await User.findOne({
         where: {
-            username: username
+            username: username,
+            group: {
+                [Op.ne]: 0
+            }
         }
     });
 
@@ -60,13 +68,60 @@ router.get("/user/:username", async (req, res) => {
 router.all("/settings", (req, res, next) => {
     // Guard
     if (!req.session.user) {
-        return res.redirect("/auth/login");
+        return res.redirect("/auth/login?redirect=/settings");
     }
 
     next();
 })
 router.get('/settings', async (req, res) => {
     res.render("settings.ejs", { user: req.session.user });
+})
+router.post("/settings", async (req, res) => {
+    const user = await User.findOne({
+        where: {
+            uid: req.session.user.uid
+        }
+    });
+
+    if (!user) return res.render('blank.ejs', { error: "Invalid session. Please log out and back in again." })
+
+    // Each individual setting
+    if (req.body.change_password == '') {
+        const current_password = req.body.current_password;
+        const new_password = req.body.new_password;
+
+        if (!current_password || !new_password) {
+            return res.render('settings.ejs', { error: "Please enter your current, and new password." });
+        }
+
+        if (!bcrypt.compareSync(current_password, user.password)) {
+            return res.render('settings.ejs', { error: "Invalid password." });
+        }
+
+        if (!validation.isStrongPassword(new_password)) {
+            return res.render('settings.ejs', { error: "New password is not strong enough." });
+        }
+
+        if (bcrypt.compareSync(new_password, user.password)) {
+            return res.render('settings.ejs', { error: "New password cannot be the same as the current password." });
+        }
+
+        const saltRounds = 10;
+        const password_hash = await bcrypt.hash(new_password, saltRounds);
+
+        await User.update(
+            { password: password_hash },
+            {
+                where: {
+                    uid: user.uid
+                }
+            }
+        );
+
+        return res.render("settings.ejs", { success: "Updated password!" });
+    }
+
+    res.render("settings.ejs", { error: "Invalid setting." })
 })
 
 module.exports = router;

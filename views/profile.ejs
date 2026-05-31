@@ -13,7 +13,10 @@
     <div style="max-width: 500px; width: 100%">
         <div>
             <h2 style="margin-top: 30px;">User Profile</h2>
-            <h2><%- include("components/username_span", { author: locals.user }) %></h2>
+            <h2 style="margin-bottom: 0px;"><%- include("components/username_span", { author: locals.user }) %></h2>
+
+            <% const creation_date = new Date(user.creation_date*1000) %>
+            <div class="opacity-50">Joined <%= creation_date.toLocaleString('en-EN', {month: "long", day: "numeric", year: "numeric"}) %></div>
         </div>
 
         <% if (locals.posts) { %>

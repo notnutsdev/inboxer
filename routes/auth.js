@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const { Op } = require("sequelize");
-const username_regex = require("../utils/username_regex");
 
 const User = require("../models/users");
+const { Op } = require("sequelize");
+
+const validation = require('../utils/validation');
 
 router.use((req, res, next) => {
     if (req.session.is_logged_in) {
@@ -57,13 +58,12 @@ router.route("/register")
             return res.render("register.ejs", { error: "Please fill out all the form fields." });
         }
 
-        if (!username.match(username_regex)) {
+        if (!validation.isValidUsername(username)) {
             return res.render("register.ejs", { error: "Usernames can only contain letters, numbers, underscores (_) and hyphens (-)." });
         }
 
         // Check password strength
-        const password_strength_regex = /^(?=.*[?!.*%$£+=@&])(?=.*[0-9])(?=.*[a-zA-Z]).{5,15}$/g;
-        if (!password.match(password_strength_regex)) {
+        if (!validation.isStrongPassword(password)) {
             return res.render("register.ejs", { error: "Password is too weak. Please provide a password with at least one number and one special character (?!.*%$£+=@&)" });
         }
 
@@ -126,6 +126,12 @@ router.route("/login")
     delete user.dataValues.password; // removing password from user object so that it doesn't get added to the session
     req.session.is_logged_in = true;
     req.session.user = user;
+
+    // Redirect user to previous page
+    const redirect = req.query.redirect;
+    if (redirect && redirect.match(/^\/[a-z-0-9-\/]*$/s)) { // make sure the user doesn't try to access something else than an internal URL
+        return res.redirect(redirect);
+    }
 
     res.render("blank.ejs", { success: "Logged in successfully!" });
 })

@@ -155,6 +155,10 @@ textarea {
     }
 }
 
+.btn-secondary {
+	background-color: var(--pixel-bg);
+}
+
 .btn-danger {
 	background-color: rgb(235, 69, 69);
 }
