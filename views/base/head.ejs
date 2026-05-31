@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%- title %></title>
+    <title><% if (locals.title) { %><%- title %><% } else { %>Inboxer<% } %></title>
 
     <!--- stylesheet -->
     <link rel="stylesheet" href="/css/styles.css">
@@ -22,4 +22,12 @@
 
     <!--- favicon -->
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <%# Open Graphs tags to embed content to other sites (like Discord) %>
+    <% if (locals.og_data) { %>
+        <meta property="og:title" content="<%= og_data.title %>" />
+        <meta property="og:description" content="<%= og_data.description %>" />
+        <meta property="og:site_name" content="Inboxer" />
+    <% } %>
+    <%# TODO: work on adding more og tags to embed videos and images from posts to other platforms %>
 </head>

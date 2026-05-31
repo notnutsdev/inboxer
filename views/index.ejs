@@ -35,7 +35,7 @@
             <% for (let i = 0; i < posts.length; i++) { %>
                 <% const elem = posts[i]; %>
                 <div>
-                    > <a href="/post/<%- elem.uid %>" class="regular"><%- elem.uid %></a> by <%- include("components/username_span", { author: elem.user }) %>
+                    > <a href="/post/<%- elem.uid %>" class="regular"><%- elem.uid %></a> by <a href="/user/<%= elem.user.username %>"><%- include("components/username_span", { author: elem.user }) %></a>
                 </div>
             <% } %>
         </div>

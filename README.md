@@ -1,9 +1,6 @@
 # ![logo](./public/img/logo.png) Inboxer
 Anonymous text sharing platform, with style.
 
-## Dev branch todo list:
-- [x] User profile pages
-
 ## Features
 - Markdown posts
 - Report system
