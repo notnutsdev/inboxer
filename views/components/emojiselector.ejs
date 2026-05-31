@@ -1,0 +1,12 @@
+<%# Emoji selector, used in the texteditor %>
+<div id="emojiselect" class="pixel-container">
+    <div style="background-color: white;" class="before">
+        <div class="emoji_box">
+            <% emojis.forEach(emoji => { %>
+                <img title="<%= emoji.stem %>" src="/img/emojis/<%= emoji.stem %>.<%= emoji.file_ext %>" height="25px">
+            <% }); %>
+        </div>
+        <div class="flex justify-content-center"><button type="button" onclick="this.parentElement.parentElement.parentElement.style.display = 'none';" class="btn">Close</button></div>
+    </div>
+    <div class="after"></div>
+</div>

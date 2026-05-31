@@ -141,6 +141,12 @@ controls.forEach(elem => elem.addEventListener("click", e => {
                 textarea.value = `${content.before}\n^^${embed_url}^^\n${content.after}`;
             });
             break;
+        case "emoji":
+            const emojiselect = document.getElementById("emojiselect");
+            emojiselect.style.left = e.clientX - 100 + "px";
+            emojiselect.style.top = e.clientY + 5 + "px";
+            emojiselect.style.display = "block";
+            break;
     }
 
     textarea.selectionStart = new_pos_all || new_pos_start || position.start;
@@ -160,4 +166,18 @@ textarea.addEventListener("keydown", e => {
         textarea.selectionStart = `${content.before}\t`.length;
         textarea.selectionEnd = `${content.before}\t`.length;
     }
+})
+
+// To add emojis to the textinput when they are clicked
+document.querySelectorAll("#emojiselect .emoji_box img").forEach(value => {
+    value.addEventListener("click", e => {
+        const position = getPosition();
+        const content = getContent(position);
+
+        const emoji_name = value.title;
+
+        textarea.value = `${content.before}:${emoji_name}:${content.after}`; // adding the :emoji_name: to the textarea
+        textarea.selectionStart = content.before.length;
+        textarea.selectionEnd = `${content.before}:${emoji_name}:`.length;
+    })
 })

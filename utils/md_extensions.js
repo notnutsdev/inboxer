@@ -1,4 +1,5 @@
 // Markdown extensions
+const fs = require("node:fs");
 const validator = require("validator");
 const ejs = require("ejs");
 const hljs = require("highlight.js");
@@ -146,6 +147,36 @@ const extensions = {
                 }
 
                 return `<div class="embed_container">${nsfw_warning_div}${popup_warning_div}<div class="iframe-container"><iframe width="420" height="345" src="${embed_info.format.replace("{@video_id}", video_id)}">Your browser does not support iframes.</iframe></div><div class="iframe-info">External video embeded from <a href="https://${clean_link}">${domain}.${tld}</a></div></div>`
+            })
+        }
+    },
+
+    // Custom emoji extension
+    emojis: {
+        type: "lang",
+        regex: /\:(?<emoji_code>[a-z0-9_]{1,20})\:/gm,
+        filter: (text, converter) => {
+            const regex = /\:(?<emoji_code>[a-z0-9_]{1,20})\:/gm;
+
+            return text.replace(regex, (match, emoji_code) => {
+                const allowed_ext = ["png", "gif"]; // File extensions to search for in the ./public/img/emojis folder
+
+                // Try to find a file in the emoji folder with the right emoji code and a valid file extension
+                let f_ext;
+                for (let i = 0; i < allowed_ext.length; i++) {
+                    const ext = allowed_ext[i];
+
+                    if (fs.existsSync(__dirname + "/../public/img/emojis/" + emoji_code + "." + ext)) {
+                        f_ext = ext;
+                        break;
+                    }
+                };
+
+                if (!f_ext) {
+                    return `<span class="emoji"><img class="no_scan" src="/img/questionmark.png" title="Invalid emoji." height="25px"></span>`;
+                };
+
+                return `<span class="emoji"><img class="no_scan" src="/img/emojis/${emoji_code}.${f_ext}" title=":${emoji_code}:" height="25px"></span>`;
             })
         }
     }

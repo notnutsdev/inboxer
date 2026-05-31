@@ -764,3 +764,21 @@ textarea#content {
 	display: flex;
 	flex-direction: column;
 }
+
+/* Emoji selector */
+#emojiselect {
+	position: absolute;
+	display: none;
+	z-index: 99;
+
+	max-width: 150px;
+}
+
+#emojiselect .emoji_box {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	gap: 7px;
+
+	max-height: 90px;
+	overflow-y: scroll;
+}

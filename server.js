@@ -9,7 +9,7 @@ const User = require("./models/users");
 
 const showdown = require("showdown");
 const md_ext = require("./utils/md_extensions");
-const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, extensions: [ md_ext.hrTag, md_ext.videoTag, md_ext.codeBlock, md_ext.videoEmbed ] });
+const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, extensions: [ md_ext.hrTag, md_ext.videoTag, md_ext.codeBlock, md_ext.videoEmbed, md_ext.emojis ] });
 
 const validator = require("validator");
 
@@ -17,6 +17,10 @@ const config = require("./config.json");
 const banned_words = require("./banned_words.json");
 
 const { Webhook, MessageBuilder } = require("discord-webhook-node");
+
+const fs = require("node:fs");
+const username_regex = require("./utils/username_regex");
+
 
 // Loading environment variables
 process.loadEnvFile("./.env");
@@ -43,6 +47,14 @@ app.use('/auth', authRoutes);
 
 // Locals/Global variables
 app.locals = config.locals;
+
+// Getting all the emoji stems (files in the /public/img/emojis folder)
+app.locals.emojis = [];
+fs.readdirSync("./public/img/emojis").forEach(value => {
+    const emoj_split = value.split("."); // to get the stem and file ext
+    app.locals.emojis.push({ stem: emoj_split[0], file_ext: emoj_split[1] });
+})
+
 
 app.get("/", async (req, res) => {
     User.hasMany(Post, {foreignKey: 'user_id'})
@@ -92,7 +104,8 @@ app.post("/create", async (req, res) => {
         if (!username) {
             return res.render("create.ejs", { error: "Please enter a username" })
         }
-        if (username.length > 100) return res.render("create.ejs", { error: "Username too long." });
+        if (username.length > 30) return res.render("create.ejs", { error: "Username too long." });
+        if (!username.match(username_regex)) return res.render("create.ejs", { error: "Username can only contain letters (a-z), numbers and underscores." })
 
         const user = await User.create({ username: username, creation_date: Math.floor(Date.now()/1000), group: 0 });
         user_id = user.uid;

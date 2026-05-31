@@ -2,7 +2,7 @@
 Anonymous text sharing platform, with style.
 
 ## Dev branch todo list:
-- [ ] User profile pages
+- [x] User profile pages
 
 ## Features
 - Markdown posts
@@ -36,3 +36,5 @@ Anonymous text sharing platform, with style.
 Run `npm install`
 Then, to start a server, run `node server.js` or `nodemon server.js` if running for development purposes.
 **Sample Database provided in the /db folder. Default admin password: `password1!`**
+
+By the way, the icon mascot thing is called Mailman.
