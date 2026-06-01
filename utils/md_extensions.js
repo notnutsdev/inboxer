@@ -5,6 +5,9 @@ const ejs = require("ejs");
 const hljs = require("highlight.js");
 // Site regex and formats used by the videoEmbed block
 const siteFormats = require("./sites_embed");
+// Database models
+const User = require('../models/users');
+const { Op } = require("sequelize");
 
 // Utility functions
 // For websites that change domains very often, find the parent domain (example: m1xdrop.click is just mixdrop.ag's video domain, but they rotate every week)
@@ -200,9 +203,42 @@ const extensions = {
                 return `<div class="music-player"><audio controls src="${music_url}"></audio></div>`;
             })
         }
+    },
+
+    mentions: {
+        type: "lang",
+        regex: /@(?<username>[a-zA-Z0-9_-]{3,20})/gm,
+        filter: (text, converter) => {
+            const username_regex = /@(?<username>[a-zA-Z0-9_-]{3,20})/gm;
+
+            // i hate myself
+            // finish whatever this is
+            return text.replace(username_regex, (match, username) => {
+                let result_html;
+
+                User.findOne({
+                    where: {
+                        username: username,
+                        group: {
+                            [Op.gt]: 0
+                        }
+                    }
+                }).then(user => {                
+                    if (!user) result_html = match;
+                    
+                    let username_html;
+
+                    ejs.renderFile(__dirname + "/../views/components/username_span.ejs", { author: user.dataValues }, {}, (err, data) => {
+                        username_html = data;
+                    });
+
+                    result_html = `<a class="is-safe" href="/user/${user.username}">${username_html}</a>`;
+                });
+
+                return result_html;
+            });
+        }
     }
 }
-
-// DOING: youtube video embedding (done) <- add more sites too
 
 module.exports = extensions;

@@ -8,9 +8,12 @@ validation.isStrongPassword = password => {
     return true;
 }
 
+// Username validation
+// Regex
+validation.username_regex = /^[a-zA-Z0-9_-]{3,20}$/g;
+// Function
 validation.isValidUsername = username => {
-    const username_regex = /^[a-zA-Z0-9_-]{3,20}$/g;
-    if (!username.match(username_regex)) {
+    if (!username.match(validation.username_regex)) {
         return false;
     }
     return true;

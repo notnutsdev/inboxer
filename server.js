@@ -9,7 +9,7 @@ const User = require("./models/users");
 
 const showdown = require("showdown");
 const md_ext = require("./utils/md_extensions");
-const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, tables: true, extensions: [ md_ext.hrTag, md_ext.videoTag, md_ext.codeBlock, md_ext.videoEmbed, md_ext.emojis, md_ext.musicBlock ] });
+const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, tables: true, extensions: [ md_ext.hrTag, md_ext.videoTag, md_ext.codeBlock, md_ext.videoEmbed, md_ext.emojis, md_ext.musicBlock, md_ext.mentions ] });
 
 const validator = require("validator");
 
