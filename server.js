@@ -296,8 +296,8 @@ app.get("/logout", (req, res) => {
         return res.redirect("/");
     }
 
-    req.session.is_logged_in = false;
-    delete req.session.user;
+    req.session.destroy();
+
     res.render("blank.ejs", { success: "Successfully logged you out!" })
 })
 

@@ -548,6 +548,7 @@ textarea {
 
 /* Grid utilities */
 .grid-3 {
+	gap: 10px;
 	display: grid;
 	grid-template-columns: auto auto auto;
 }
@@ -556,7 +557,7 @@ textarea {
 		grid-template-columns: auto auto;
 	}
 }
-@media screen and (max-width: 300px) {
+@media screen and (max-width: 380px) {
 	.grid-3 {
 		grid-template-columns: auto;
 	}
@@ -629,9 +630,9 @@ textarea#content {
 	height: 15px
 }
 
-.code_block .code_content {
-	/* padding: 10px 0px; */
-}
+/* .code_block .code_content {
+	padding: 10px 0px;
+} */
 
 /* Code blocks synthax highlight */
 .hljs-built_in {
@@ -826,4 +827,9 @@ textarea#content {
 
 #content table th, #content table td {
 	padding: 3px 10px
+}
+
+input[type=checkbox] {
+	accent-color: white;
+	box-shadow: none;
 }

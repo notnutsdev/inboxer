@@ -19,10 +19,15 @@ const Settings = sequelize.define("settings", {
     },
 
     // Settings
-    theme_color: {
+    theme_color: { // the theme of the website
         type: DataTypes.STRING,
         allowNull: true,
         default: "random"
+    },
+    nsfw_check: { // wherever the nsfw checker should be activated or not
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        default: true
     }
 });
 

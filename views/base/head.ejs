@@ -8,8 +8,12 @@
     <!--- stylesheet -->
     <link rel="stylesheet" href="/css/styles.css">
 
-    <!--- scripts -->
-    <script src="/js/script.js" defer></script>
+    <!--- global scripts -->
+    <%# if the user has set a custom color %>
+    <% if (locals.user && locals.user.settings.theme_color != 'random') { %>
+        <script>var user_theme_color = "<%= locals.user.settings.theme_color %>";</script><%# this really sucks what am i doing with my life %>
+    <% } %>
+    <script src="/js/theme.js" defer></script> <%# theme script %>
 
     <!--- fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

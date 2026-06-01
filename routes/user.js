@@ -4,9 +4,10 @@ const router = express.Router();
 
 const Post = require("../models/posts");
 const User = require("../models/users");
+const Settings = require('../models/settings');
 const bcrypt = require("bcrypt");
 
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 const validation = require('../utils/validation');
 
@@ -117,11 +118,44 @@ router.post("/settings", async (req, res) => {
                 }
             }
         );
+    } else if (req.body.nsfw_checker == '') {
+        const nsfw_checker = (req.body.nsfw_checker_activated == "on") ? true : false; // wherever the user has activated or disabled the nsfw checker
 
-        return res.render("settings.ejs", { success: "Updated password!" });
+        await Settings.update({ nsfw_check: nsfw_checker },
+            {
+                where: {
+                    user_id: req.session.user.uid
+                }
+            }
+        );
+
+        req.session.user.settings.nsfw_check = nsfw_checker;
+
+    } else if (req.body.change_theme_color == '') {
+        // Check that the provided body is a valid Hex color (sent by browsers by default)
+        const theme_color = (req.body.theme_color) ? req.body.theme_color : "random";
+        const hexcolor_regex = /^#[a-zA-Z0-9]{6}$/;
+
+        if (theme_color != "random" && !theme_color.match(hexcolor_regex)) {
+            return res.render("settings.ejs", { user: req.session.user, error: "Invalid color provided." });
+        }
+        
+        await Settings.update(
+            { theme_color: theme_color },
+            {
+                where: {
+                    user_id: req.session.user.uid
+                }
+            }
+        )
+
+        req.session.user.settings.theme_color = theme_color;
+
+    } /* For invalid settings */ else {
+        return res.render("settings.ejs", { user: req.session.user, error: "Invalid setting." })
     }
 
-    res.render("settings.ejs", { error: "Invalid setting." })
+    return res.render("settings.ejs", { user: req.session.user, success: "Updated settings!" });
 })
 
 module.exports = router;

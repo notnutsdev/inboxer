@@ -8,6 +8,12 @@ const { Op } = require("sequelize");
 
 const validation = require('../utils/validation');
 
+// The default settings to give to a user
+const defaultSettings = {
+    theme_color: "random",
+    nsfw_check: true
+}
+
 router.use((req, res, next) => {
     if (req.session.is_logged_in) {
         return res.redirect("/");
@@ -81,13 +87,15 @@ router.route("/register")
 
     const user = await User.create({ username: username, password: password_hash, creation_date: timestamp, group: user_group });
     delete user.dataValues.password; // removing password from user object so that it doesn't get added to the session
+    req.session.is_logged_in = true;
+    req.session.user = user.dataValues;
 
     // Create the user's settings
-    const user_settings = await Settings.create({ user_id: user.uid, theme_color: "random" });
-    user.settings = user_settings;
+    const settings = defaultSettings;
+    settings.user_id = user.uid;
 
-    req.session.is_logged_in = true;
-    req.session.user = user;
+    const user_settings = await Settings.create(settings);
+    req.session.user.settings = user_settings.dataValues;
 
     if (user_group == 1) {
         const account_end_date = new Date((timestamp + (7 * 24 * 60 * 60)) * 1000).toString(); // The timestamp of the end of the account (7 days later)
@@ -130,15 +138,15 @@ router.route("/login")
 
     delete user.dataValues.password; // removing password from user object so that it doesn't get added to the session
     req.session.is_logged_in = true;
-    req.session.user = user;
+    req.session.user = user.dataValues;
 
     // Getting user settings
-    const user_settings = await Settings.fetchOne({
+    const user_settings = await Settings.findOne({
         where: {
             user_id: user.uid
         }
     });
-    req.session.user.settings = user_settings;
+    req.session.user.settings = user_settings.dataValues;
 
     // Redirect user to previous page
     const redirect = req.query.redirect;

@@ -63,16 +63,25 @@
     <% } %>
 
     <!--- scripts -->
-    <script src="https://unpkg.com/@tensorflow/tfjs@4.22.0" type="text/javascript"></script>
-    <script src="/libraries/nsfwjs.model.min.js" defer type="module"></script>
-    <script src="/libraries/nsfwjs.min.js" defer type="module"></script>
-    <script src="/libraries/nsfwjs.group1-shard1of1.min.js" defer type="module"></script>
-
     <script src="/js/components.js" type="module" defer></script>
     <script src="/js/redirect_check.js" type="module" defer></script>
     <script src="/js/copy.js" defer></script>
-    <script src="/js/spoiler.js" defer type="module"></script>
     <script src="/js/utils.js" defer></script>
+
+    <%# NSFW checker script %>
+    <% if (!locals.user || locals.user.settings.nsfw_check != false) { %> <%# check if the user has disabled nsfw checking %>
+        <script src="https://unpkg.com/@tensorflow/tfjs@4.22.0" type="text/javascript"></script>
+        <script src="/libraries/nsfwjs.model.min.js" defer type="module"></script>
+        <script src="/libraries/nsfwjs.min.js" defer type="module"></script>
+        <script src="/libraries/nsfwjs.group1-shard1of1.min.js" defer type="module"></script>
+        <script src="/js/spoiler.js" defer type="module"></script>
+    <% } else { %>
+        <style>
+            #content img {
+                filter: none;
+            }
+        </style>
+    <% } %>
 
     <%- include("base/footer") %>
 </body>
