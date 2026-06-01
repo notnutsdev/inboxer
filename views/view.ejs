@@ -1,7 +1,7 @@
 <% if (locals.error) { %>
     <%- include("base/head", { title: "Error" }) %>
 <% } else { %>
-    <%- include("base/head", { title: `Viewing post: ${post.uid}`, og_data: { title: post.uid, description: "Inboxer, anonymous text sharing playform, with style" } }) %> <%# og_data for open graph embeds %>
+    <%- include("base/head", { title: `Viewing post: ${post.uid}`, og_data: { title: post.uid, description: og_data.description } }) %> <%# og_data for open graph embeds %>
 <% } %>
 
 <body>

@@ -1,6 +1,7 @@
 const Post = require("./posts");
 const User = require("./users");
 const Group = require("./groups");
+const Settings = require('./settings');
 const sequelize = require("./connection");
 
 // Function to init/sync all models

@@ -812,3 +812,18 @@ textarea#content {
 .secondary-color-text {
 	color: var(--secondary-color);
 }
+
+/* Post tables */
+#content table {
+	/* pixel effect */
+	border: solid white 2px;
+  	box-shadow: 0px 0px 0px 2px black;
+}
+
+#content table thead {
+	box-shadow: 0px 0px 0px 2px black, 0px 2px 0px 2px white;
+}
+
+#content table th, #content table td {
+	padding: 3px 10px
+}

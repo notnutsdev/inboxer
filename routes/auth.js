@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 
 const User = require("../models/users");
+const Settings = require('../models/settings');
 const { Op } = require("sequelize");
 
 const validation = require('../utils/validation');
@@ -81,6 +82,10 @@ router.route("/register")
     const user = await User.create({ username: username, password: password_hash, creation_date: timestamp, group: user_group });
     delete user.dataValues.password; // removing password from user object so that it doesn't get added to the session
 
+    // Create the user's settings
+    const user_settings = await Settings.create({ user_id: user.uid, theme_color: "random" });
+    user.settings = user_settings;
+
     req.session.is_logged_in = true;
     req.session.user = user;
 
@@ -126,6 +131,14 @@ router.route("/login")
     delete user.dataValues.password; // removing password from user object so that it doesn't get added to the session
     req.session.is_logged_in = true;
     req.session.user = user;
+
+    // Getting user settings
+    const user_settings = await Settings.fetchOne({
+        where: {
+            user_id: user.uid
+        }
+    });
+    req.session.user.settings = user_settings;
 
     // Redirect user to previous page
     const redirect = req.query.redirect;

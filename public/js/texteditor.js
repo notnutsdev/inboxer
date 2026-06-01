@@ -147,6 +147,12 @@ controls.forEach(elem => elem.addEventListener("click", e => {
             emojiselect.style.top = e.clientY + 5 + "px";
             emojiselect.style.display = "block";
             break;
+        case "music":
+            createInputDialog({ title: "Enter your music file URL", placeholder: "Enter your URL..." }, music_url => {
+                new_pos_all = `${content.before}\n&(${music_url})\n`.length;
+                textarea.value = `${content.before}\n&(${music_url})\n${content.after}`;
+            });
+            break;
     }
 
     textarea.selectionStart = new_pos_all || new_pos_start || position.start;

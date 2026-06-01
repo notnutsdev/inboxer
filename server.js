@@ -9,7 +9,7 @@ const User = require("./models/users");
 
 const showdown = require("showdown");
 const md_ext = require("./utils/md_extensions");
-const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, extensions: [ md_ext.hrTag, md_ext.videoTag, md_ext.codeBlock, md_ext.videoEmbed, md_ext.emojis ] });
+const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, tables: true, extensions: [ md_ext.hrTag, md_ext.videoTag, md_ext.codeBlock, md_ext.videoEmbed, md_ext.emojis, md_ext.musicBlock ] });
 
 const validator = require("validator");
 
@@ -145,7 +145,12 @@ app.get('/post/:uid', async (req, res) => {
     // Delete the user password
     delete post.dataValues.user.dataValues.password;
 
-    res.render("view.ejs", { post: post.dataValues, author: post.dataValues.user.dataValues, user: req.session.user });
+    // Open Graphs data for the post
+    const og_data = {};
+    // Get the text from the post (without the HTML tags) for Open Graphs meta tags
+    og_data.description = post.dataValues.content.replace(/\<(.*?)\>/gm, "").trim().substring(0, 35) + "...";
+
+    res.render("view.ejs", { post: post.dataValues, author: post.dataValues.user.dataValues, user: req.session.user, og_data: og_data });
 });
 
 app.get("/random", async (req, res) => {

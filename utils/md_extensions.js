@@ -25,7 +25,7 @@ const findParentDomain = domain => {
 const extensions = {
     hrTag: {
         type: 'lang',
-        regex: /---/g,
+        regex: /=---=/g,
         replace: '<hr>'
     },
 
@@ -177,6 +177,27 @@ const extensions = {
                 };
 
                 return `<span class="emoji"><img class="no_scan" src="/img/emojis/${emoji_code}.${f_ext}" title=":${emoji_code}:" height="25px"></span>`;
+            })
+        }
+    },
+
+    // Music player
+    musicBlock: {
+        type: "lang",
+        regex: /\$\((?<music_url>\S{5,})\)/gm, // &(music_link_here)
+        filter: (text, converter) => {
+            text = validator.unescape(text);
+
+            const musicblock_regex = /\&\((?<music_url>\S{5,})\)/gm;
+
+            return text.replace(musicblock_regex, (match, music_url) => {
+                const allowed_file_ext = ["mp3", "m4a"];
+
+                if (!validator.isURL(music_url)) {
+                    return "Invalid URL."
+                };
+
+                return `<div class="music-player"><audio controls src="${music_url}"></audio></div>`;
             })
         }
     }
