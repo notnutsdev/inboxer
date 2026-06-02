@@ -3,7 +3,6 @@ const middleware = {};
 
 // Checks if the user is logged in and redirect them to the login page if not
 middleware.checkLogin = (req, res, next) => {
-    console.log(req.route)
     // Guard
     if (!req.session.user) {
         return res.redirect("/auth/login?redirect=" + req.route.path);
