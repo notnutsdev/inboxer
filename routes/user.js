@@ -36,7 +36,7 @@ router.get("/user/:username", async (req, res) => {
     });
 
     if (!user) {
-        return res.render("blank.ejs", { error: "User not found." });
+        return res.render("blank.ejs", { error: "User not found.", user: req.session.user });
     }
 
     // Getting the user's posts
@@ -59,12 +59,12 @@ router.get("/user/:username", async (req, res) => {
     const total_pages = Math.ceil(total_post_count/posts_per_page);
 
     if (total_pages >= 1 && page > total_pages) {
-        return res.render("blank.ejs", { error: "The provided page number doesn't exist for this user." });
+        return res.render("blank.ejs", { error: "The provided page number doesn't exist for this user.", user: req.session.user });
     }
 
     delete user.dataValues.password;
 
-    res.render("profile.ejs", { user: user, posts: posts, page: +page, total_pages: total_pages });
+    res.render("profile.ejs", { user: req.session.user, profile: user, posts: posts, page: +page, total_pages: total_pages });
 });
 
 router.all("/settings", middleware.checkLogin);

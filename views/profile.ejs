@@ -1,7 +1,7 @@
 <% if (locals.error) { %>
     <%- include("base/head", { title: "Error" }) %>
 <% } else { %>
-    <%- include("base/head", { title: `User - ${locals.user.username}` }) %>
+    <%- include("base/head", { title: `User - ${locals.profile.username}` }) %>
 <% } %>
 
 <body>
@@ -13,9 +13,9 @@
     <div style="max-width: 500px; width: 100%">
         <div>
             <h2 style="margin-top: 30px;">User Profile</h2>
-            <h2 style="margin-bottom: 0px;"><%- include("components/username_span", { author: locals.user }) %></h2>
+            <h2 style="margin-bottom: 0px;"><%- include("components/username_span", { author: locals.profile }) %></h2>
 
-            <% const creation_date = new Date(user.creation_date*1000) %>
+            <% const creation_date = new Date(profile.creation_date*1000) %>
             <div class="opacity-50">Joined <%= creation_date.toLocaleString('en-EN', {month: "long", day: "numeric", year: "numeric"}) %></div>
         </div>
 
@@ -31,11 +31,11 @@
                 <%# pagination buttons %>
                 <div class="btn-row" style="padding: 10px">
                     <% if (page-1 > 0) { %>
-                        <a href="/user/<%= user.username %>?page=<%= page-1 %>" class="btn"><%= page-1 %></a>
+                        <a href="/user/<%= profile.username %>?page=<%= page-1 %>" class="btn"><%= page-1 %></a>
                     <% } %>
                     <button class="btn"><%= page %></button>
                     <% if (page+1 <= total_pages) { %>
-                        <a href="/user/<%= user.username %>?page=<%= page+1 %>" class="btn"><%= page+1 %></a>
+                        <a href="/user/<%= profile.username %>?page=<%= page+1 %>" class="btn"><%= page+1 %></a>
                     <% } %>
                 </div>
             <% } else { %>

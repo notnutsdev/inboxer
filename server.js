@@ -8,9 +8,7 @@ const initModels = require("./models/init");
 const Post = require("./models/posts");
 const User = require("./models/users");
 
-const showdown = require("showdown");
-const md_ext = require("./utils/md_extensions");
-const converter = new showdown.Converter({ tasklists: true, underline: true, strikethrough: true, parseImgDimensions: true, tables: true, extensions: [ md_ext.hrTag, md_ext.videoTag, md_ext.codeBlock, md_ext.videoEmbed, md_ext.emojis, md_ext.musicBlock, md_ext.mentions ] });
+const markdownToHTML = require('./utils/md_compile');
 
 const validator = require("validator");
 
@@ -114,7 +112,7 @@ app.post("/create", async (req, res) => {
     }
 
     const uuid = crypto.randomUUID();
-    const content_html = converter.makeHtml(validator.escape(content));
+    const content_html = await markdownToHTML(content); // legacy: converter.makeHtml(validator.escape(content));
     const date = Math.floor(Date.now()/1000); // Current unix timestamp
 
     // Adding the record to the database
@@ -321,7 +319,7 @@ app.post("/edit/:uid", async (req, res) => {
         return res.render('edit.ejs', { error: "Please enter more than 5 characters.", post: req.post, user: req.session.user })
     }
 
-    const content_html = converter.makeHtml(validator.escape(content));
+    const content_html = await markdownToHTML(content);
     const date = Math.floor(Date.now()/1000);
 
     await Post.update(

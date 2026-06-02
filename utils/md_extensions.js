@@ -26,6 +26,8 @@ const findParentDomain = domain => {
 }
 
 const extensions = {
+    /////////// Showdown extensions
+    ////// Sync only
     hrTag: {
         type: 'lang',
         regex: /=---=/g,
@@ -205,39 +207,44 @@ const extensions = {
         }
     },
 
-    mentions: {
-        type: "lang",
-        regex: /@(?<username>[a-zA-Z0-9_-]{3,20})/gm,
-        filter: (text, converter) => {
-            const username_regex = /@(?<username>[a-zA-Z0-9_-]{3,20})/gm;
+    ///////// Custom compiled extensions
+    //// They are for async operations, and take a text parameter with the text to convert.
+    //// They must return the converted text
+    mentions: async (text) => {
+        const username_regex = /@(?<username>[a-zA-Z0-9_-]{3,20})/gm;
 
-            // i hate myself
-            // finish whatever this is
-            return text.replace(username_regex, (match, username) => {
-                let result_html;
+        const matches = [...new Set(text.match(username_regex))]; // Getting all matches without duplicates
+        if (!matches) return text;
 
-                User.findOne({
-                    where: {
-                        username: username,
-                        group: {
-                            [Op.gt]: 0
-                        }
+        const mentions_data = {}; // Object where the mentions data are stored.
+        
+        for (const value of matches) {
+            const username = value.replace('@', ''); // Remove the @ symbol from the mention
+
+            const user = await User.findOne({
+                where: {
+                    username: username,
+                    group: {
+                        [Op.gt]: 0
                     }
-                }).then(user => {                
-                    if (!user) result_html = match;
-                    
-                    let username_html;
-
-                    ejs.renderFile(__dirname + "/../views/components/username_span.ejs", { author: user.dataValues }, {}, (err, data) => {
-                        username_html = data;
-                    });
-
-                    result_html = `<a class="is-safe" href="/user/${user.username}">${username_html}</a>`;
-                });
-
-                return result_html;
+                }
             });
+
+            if (!user) {
+                mentions_data[value] = value;
+                continue;
+            }
+
+            const username_html = await ejs.renderFile(__dirname + "/../views/components/username_span.ejs", { author: user.dataValues });
+            mentions_data[value] = `<a is-safe="true" class="no-effect" href="/user/${user.username}">@${username_html}</a>`;
+        };
+
+        let result_html = text;
+        for (const [key, value] of Object.entries(mentions_data)) {
+            result_html = result_html.replace(key, value);
         }
+
+        return result_html;
     }
 }
 
