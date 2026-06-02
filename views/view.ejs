@@ -42,28 +42,39 @@
             
             <%# show the delete button for staff members %>
             <% if ((locals.user && locals.user.group >= 3) || (locals.user && locals.user.uid == author.uid)) { %>
-                <div style="display: flex; justify-content: center;">
-                    <a href="/delete/<%= post.uid %>"><button class="btn btn-danger">Delete post</button></a>
+                <div style="display: flex; justify-content: center; gap: 10px">
+                    <a href="/edit/<%= post.uid %>"><button title="Edit post" class="btn btn-success"><img height="23px" src="/img/edit.png"></button></a>
+                    <a href="/delete/<%= post.uid %>"><button title="Delete post" class="btn btn-danger"><img height="23px" src="/img/delete.png"></button></a>
                 </div>
             <% } %>
 
+            <%# Main content %>
             <div class="wrapper">
                 <div class="container pixel-border" style="margin-top: 23px; padding: 0px 10px">
                     <div id="content">
-                        <%- post.content %>
+                        <%- post.content_html %>
                     </div>
                 </div>
             </div>
 
-            <%# Report button %>
+            <%# Action bar (more info, report etc) %>
             <div class="flex justify-content-center margin-15 no-margin-bottom">
-                <a href="/report?post_id=<%= post.uid %>" style="opacity: 0.5; gap: 5px" class="flex align-items-center"><img src="/img/warning.png" height="15px"> Report</a>
+                <div class="container post-details-bar">
+                    <div class="popover" popover_content="Posted on <%= new Date(post.created_at*1000).toLocaleString('en-EN', {month: 'long', day: 'numeric', year: 'numeric'}) %><br>Last updated on <%= new Date(post.updated_at*1000).toLocaleString('en-EN', {month: 'long', day: 'numeric', year: 'numeric'}) %>">
+                            <span class="flex align-items-center gap-5"><img src="/img/info.png" alt="info" height="15px">Details</span>
+                        </div>
+
+                        <a href="/report?post_id=<%= post.uid %>" class="flex align-items-center gap-5"><img src="/img/warning.png" height="15px"> Report</a>
+                    </div>
+                </div>
             </div>
+
         </div>
     <% } %>
 
     <!--- scripts -->
     <script src="/js/components.js" type="module" defer></script>
+    <script src="/js/popover.js" type="module" defer></script>
     <script src="/js/redirect_check.js" type="module" defer></script>
     <script src="/js/copy.js" defer></script>
     <script src="/js/utils.js" defer></script>

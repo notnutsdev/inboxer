@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const middleware = require("./middleware");
 const bcrypt = require("bcrypt");
 
 const User = require("../models/users");
@@ -14,13 +15,7 @@ const defaultSettings = {
     nsfw_check: true
 }
 
-router.use((req, res, next) => {
-    if (req.session.is_logged_in) {
-        return res.redirect("/");
-    }
-
-    next();
-});
+router.use(middleware.checkLogout);
 
 router.route("/register")
 .get((req, res) => {

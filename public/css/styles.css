@@ -35,7 +35,7 @@ hr {
 	border-right: none;
 }
 
-form#create {
+form#create, form#edit {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -832,4 +832,10 @@ textarea#content {
 input[type=checkbox] {
 	accent-color: white;
 	box-shadow: none;
+}
+
+.post-details-bar {
+	display: flex;
+	gap: 10px;
+	opacity: 0.5;
 }

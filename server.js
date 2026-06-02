@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const app = express();
+const middleware = require('./routes/middleware');
 
 const sequelize = require("./models/connection");
 const initModels = require("./models/init");
@@ -113,11 +114,11 @@ app.post("/create", async (req, res) => {
     }
 
     const uuid = crypto.randomUUID();
-
-    content = converter.makeHtml(validator.escape(content));
+    const content_html = converter.makeHtml(validator.escape(content));
+    const date = Math.floor(Date.now()/1000); // Current unix timestamp
 
     // Adding the record to the database
-    const post = await Post.create({ uid: uuid, user_id: user_id, content: content });
+    const post = await Post.create({ uid: uuid, user_id: user_id, content_html: content_html, content_text: content, created_at: date, updated_at: date });
 
     res.redirect("/post/" + uuid);
 })
@@ -148,7 +149,7 @@ app.get('/post/:uid', async (req, res) => {
     // Open Graphs data for the post
     const og_data = {};
     // Get the text from the post (without the HTML tags) for Open Graphs meta tags
-    og_data.description = post.dataValues.content.replace(/\<(.*?)\>/gm, "").trim().substring(0, 35) + "...";
+    og_data.description = post.dataValues.content_html.replace(/\<(.*?)\>/gm, "").trim().substring(0, 35) + "...";
 
     res.render("view.ejs", { post: post.dataValues, author: post.dataValues.user.dataValues, user: req.session.user, og_data: og_data });
 });
@@ -288,6 +289,55 @@ app.get("/delete/:uid", async (req, res) => {
     hook.send(embed);
 
     return res.render("blank.ejs", { success: "Deleted post with ID: " + uid });
+});
+
+// Editing a post
+app.all("/edit/:uid", middleware.checkLogin);
+app.all("/edit/:uid", async (req, res, next) => {
+    const post = await Post.findOne({
+        where: {
+            uid: req.params.uid
+        }
+    });
+
+    if (!post) {
+        return res.render("blank.ejs", { error: "Post not found.", user: req.session.user });
+    }
+
+    if (req.session.user.group < 3 && req.session.user.uid != post.user_id) {
+        return res.render("blank.ejs", { error: "You cannot edit a post you didn't create.", user: req.session.user });
+    }
+
+    req.post = post;
+    next();
+});
+app.get("/edit/:uid", async (req, res) => {
+    return res.render("edit.ejs", { user: req.session.user, post: req.post });
+})
+app.post("/edit/:uid", async (req, res) => {
+    const content = req.body.content;
+
+    if (content.length < 5) {
+        return res.render('edit.ejs', { error: "Please enter more than 5 characters.", post: req.post, user: req.session.user })
+    }
+
+    const content_html = converter.makeHtml(validator.escape(content));
+    const date = Math.floor(Date.now()/1000);
+
+    await Post.update(
+        {
+            content_html: content_html,
+            content_text: content,
+            updated_at: date
+        },
+        {
+            where: {
+                uid: req.post.uid
+            }
+        }
+    );
+
+    return res.redirect("/post/" + req.post.uid);
 })
 
 // Logout the user
@@ -299,7 +349,7 @@ app.get("/logout", (req, res) => {
     req.session.destroy();
 
     res.render("blank.ejs", { success: "Successfully logged you out!" })
-})
+});
 
 // Bonus pages
 // Pages on the homepage

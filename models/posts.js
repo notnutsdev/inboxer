@@ -18,16 +18,24 @@ const Post = sequelize.define("posts", {
             key: "uid"
         }
     },
-    content: {
+
+    content_html: { // The post's compiled HTML
         type: DataTypes.TEXT,
         allowNull: false
+    },
+    content_text: { // The post's text content (markdown)
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    
+    created_at: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    updated_at: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
-
-    /* Permissions here is what the post can show.
-    0 = regular posts (they should all be like this by default)
-    1 = html allowed for username (no sanitization for the username when the page is rendered. THIS SHOULD ONLY BE USED TO CREATE OFFICIAL SITE PAGES, AS THIS CAN CAUSE XSS)
-    2 = html allowed for content
-    */
 });
 
 Post.belongsTo(User, {foreignKey: 'user_id'})

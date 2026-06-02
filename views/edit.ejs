@@ -1,0 +1,29 @@
+<%- include("base/head", { title: "Editing post" }) %>
+
+<body>
+    <%- include("base/nav") %>
+
+    <%- include('base/error') %>
+
+    <div class="wrapper">
+        <div class="container pixel-border form-container text-center">
+            <h2>Edit your post</h2>
+
+            <form action="/edit/<%= post.uid %>" method="post" id="edit">                
+                <div style="width: 80%">
+                    <%- include("components/texteditor") %>
+
+                    <textarea name="content" id="content" placeholder="Content here"><%= post.content_text %></textarea>
+                </div>
+                
+                <button class="btn" type="submit">Edit</button>
+            </form>
+        </div>
+    </div>
+
+    <!--- scripts -->
+    <script src="/js/texteditor.js" type="module" defer></script>
+
+    <%- include("base/footer") %>
+</body>
+</html>

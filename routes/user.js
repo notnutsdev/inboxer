@@ -1,6 +1,7 @@
 // User related routes
 const express = require('express');
 const router = express.Router();
+const middleware = require('./middleware');
 
 const Post = require("../models/posts");
 const User = require("../models/users");
@@ -66,14 +67,7 @@ router.get("/user/:username", async (req, res) => {
     res.render("profile.ejs", { user: user, posts: posts, page: +page, total_pages: total_pages });
 });
 
-router.all("/settings", (req, res, next) => {
-    // Guard
-    if (!req.session.user) {
-        return res.redirect("/auth/login?redirect=/settings");
-    }
-
-    next();
-})
+router.all("/settings", middleware.checkLogin);
 router.get('/settings', async (req, res) => {
     res.render("settings.ejs", { user: req.session.user });
 })
