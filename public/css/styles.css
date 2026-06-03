@@ -843,3 +843,19 @@ input[type=checkbox] {
 	gap: 10px;
 	opacity: 0.5;
 }
+
+/* Altcha Customization */
+.captcha {
+	width: fit-content;
+	min-width: 220px;
+}
+
+.captcha .altcha-main {
+	clip-path: polygon(4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px);
+	border: none
+}
+
+.captcha .altcha-checkbox input:checked {
+  background-color: var(--pixel-bg);
+  border-color: var(--secondary-color);
+}

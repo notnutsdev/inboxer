@@ -13,7 +13,8 @@
     "libraries": {
         "nsfwjs.min.js": "/node_modules/nsfwjs/dist/browser/nsfwjs.min.js",
         "nsfwjs.model.min.js": "/node_modules/nsfwjs/dist/models/mobilenet_v2/model.min.js",
-        "nsfwjs.group1-shard1of1.min.js": "/node_modules/nsfwjs/dist/models/mobilenet_v2/group1-shard1of1.min.js"
+        "nsfwjs.group1-shard1of1.min.js": "/node_modules/nsfwjs/dist/models/mobilenet_v2/group1-shard1of1.min.js",
+        "altcha.min.js": "/node_modules/altcha/dist/main/altcha.min.js"
     },
 
     "locals": {

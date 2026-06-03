@@ -10,6 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "altcha": "^3.0.11",
+    "altcha-lib": "^2.2.0",
     "bcrypt": "^6.0.0",
     "discord-webhook-node": "^1.1.8",
     "ejs": "^5.0.2",

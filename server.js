@@ -20,6 +20,8 @@ const { Webhook, MessageBuilder } = require("discord-webhook-node");
 const fs = require("node:fs");
 const validation = require('./utils/validation'); // internal validation utility (This is NOT the validator package)
 
+const altcha = require('./utils/altcha');
+
 
 // Loading environment variables
 process.loadEnvFile("./.env");
@@ -56,6 +58,10 @@ fs.readdirSync("./public/img/emojis").forEach(value => {
     app.locals.emojis.push({ stem: emoj_split[0], file_ext: emoj_split[1] });
 })
 
+// Captcha routes
+app.get('/altcha/challenge', altcha.challengeHandler);
+app.post('/altcha/verify', altcha.verifyHandler);
+
 
 app.get("/", async (req, res) => {
     User.hasMany(Post, {foreignKey: 'user_id'})
@@ -77,6 +83,13 @@ app.get('/create', (req, res) => {
     res.render("create.ejs", { user: req.session.user });
 })
 
+app.post('/create', (req, res, next) => { // to show captchas only to throwaway users
+    if (req.session.user) {
+        req.skipCaptcha = true;
+    }
+    next();
+})
+app.post('/create', middleware.checkAltcha) // check the actual captcha
 app.post("/create", async (req, res) => {
     let user_id;
     let content = req.body.content;

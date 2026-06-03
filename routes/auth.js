@@ -9,6 +9,7 @@ const { Op } = require("sequelize");
 
 const validation = require('../utils/validation');
 
+
 // The default settings to give to a user
 const defaultSettings = {
     theme_color: "random",
@@ -106,6 +107,7 @@ router.route("/login")
 .get((req, res) => {
     res.render("login.ejs");
 })
+.post(middleware.checkAltcha) // Validate/Check captcha
 .post(async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;

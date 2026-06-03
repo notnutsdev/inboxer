@@ -74,5 +74,4 @@ const colorisePage = color => {
     document.documentElement.style.setProperty("--secondary-color", colorToCssRGB(darkColors)); // Set the dark color as the dark-color css variable
 }
 
-console.log(color, typeof color)
 colorisePage(color);
