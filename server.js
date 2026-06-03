@@ -39,7 +39,8 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
-}))
+}));
+app.use(middleware.rateLimiter);
 
 // Registering routers
 app.use('/auth', authRoutes);
