@@ -21,6 +21,7 @@ const fs = require("node:fs");
 const validation = require('./utils/validation'); // internal validation utility (This is NOT the validator package)
 
 const altcha = require('./utils/altcha');
+const redis = require("./utils/redis.js");
 
 
 // Loading environment variables
@@ -61,6 +62,11 @@ fs.readdirSync("./public/img/emojis").forEach(value => {
 // Captcha routes
 app.get('/altcha/challenge', altcha.challengeHandler);
 app.post('/altcha/verify', altcha.verifyHandler);
+
+// Connect top the redis server
+redis.connect().catch(() => {
+    throw new Error("Could not connect to the redis server. Make sure you have Redis installed and running.")
+});
 
 
 app.get("/", async (req, res) => {
@@ -132,6 +138,9 @@ app.post("/create", async (req, res) => {
     // Adding the record to the database
     const post = await Post.create({ uid: uuid, user_id: user_id, content_html: content_html, content_text: content, created_at: date, updated_at: date });
 
+    // Adding post to the redis cache
+    await redis.hSet("post-" + uuid, post.dataValues);
+
     res.redirect("/post/" + uuid);
 })
 
@@ -141,29 +150,62 @@ app.get('/post/:uid', async (req, res) => {
     User.hasMany(Post, {foreignKey: 'user_id'})
     Post.belongsTo(User, {foreignKey: 'user_id'})
 
-    const post = await Post.findOne({
-        where: {
-            uid: uid
-        },
-        include: [{
-            model: User,
-            required: true
-        }]
-    });
+    let post, author;
 
-    if (!post) {
-        return res.render("view.ejs", { error: "No post found for this ID." });
+    // Try to get the post from the redis cache
+    post = await redis.hGetAll('post-' + uid);
+
+    // If the post is found in cache
+    if (Object.keys(post).length > 0) {
+        // Get the author
+        author = await User.findOne({
+            where: {
+                uid: +post.user_id
+            }
+        });
+    } else { // if the post isn't found, find it from the database
+
+        post = await Post.findOne({
+            where: {
+                uid: uid
+            },
+            include: [{
+                model: User,
+                required: true
+            }]
+        });
+
+        // If the post was still not found, return an error
+        if (!post) {
+            return res.render("view.ejs", { error: "No post found for this ID." });
+        }
+
+        author = post.dataValues.user;
+        post = post.dataValues;
+        delete post.user; // For the cache
+
+        // Add the post to cache
+        await redis.hSet("post-" + uid, post);
+    };
+
+    // If the user isn't found, assume it's a deleted user.
+    if (!author) {
+        author = {
+            username: "Deleted User",
+            group: -1 // Deleted users group
+        }
+    } else {
+        author = author.dataValues;
+        // Delete the user's password
+        delete author.password;
     }
-
-    // Delete the user password
-    delete post.dataValues.user.dataValues.password;
 
     // Open Graphs data for the post
     const og_data = {};
     // Get the text from the post (without the HTML tags) for Open Graphs meta tags
-    og_data.description = post.dataValues.content_html.replace(/\<(.*?)\>/gm, "").trim().substring(0, 35) + "...";
+    og_data.description = post.content_html.replace(/\<(.*?)\>/gm, "").trim().substring(0, 50) + "...";
 
-    res.render("view.ejs", { post: post.dataValues, author: post.dataValues.user.dataValues, user: req.session.user, og_data: og_data });
+    res.render("view.ejs", { post: post, author: author, user: req.session.user, og_data: og_data });
 });
 
 app.get("/random", async (req, res) => {
@@ -274,7 +316,7 @@ app.get("/delete/:uid", async (req, res) => {
     });
 
 
-    if (!post) return req.redirect("/");
+    if (!post) return res.redirect("/");
 
     // If the user isn't the post author and isn't a mod/admin
     if (post.user.uid != req.session.user.uid && req.session.user.group < 3) {
@@ -287,6 +329,12 @@ app.get("/delete/:uid", async (req, res) => {
         }
     });
 
+    // Delete post from cache
+    const cached_post = await redis.hGetAll("post-" + uid);
+    if (Object.keys(cached_post).length > 0) {
+        await redis.del("post-" + uid);
+    }
+
     // Log everything to the webhook log channel
     const hook = new Webhook(process.env.STAFF_LOGS_WEBHOOK);
     const embed = new MessageBuilder()
@@ -296,7 +344,7 @@ app.get("/delete/:uid", async (req, res) => {
     .addField("Post ID", `\`${uid}\``)
     .addField("Action", "Deletion")
     .addField("Post Author", `\`${post.user.username}\``)
-    .addField("Original content", `\`\`\`${post.content}\`\`\``)
+    .addField("Original content", `\`\`\`${post.content_text}\`\`\``)
     .setTimestamp();
     hook.send(embed);
 
@@ -327,6 +375,7 @@ app.get("/edit/:uid", async (req, res) => {
     return res.render("edit.ejs", { user: req.session.user, post: req.post });
 })
 app.post("/edit/:uid", async (req, res) => {
+    const uid = req.post.uid;
     const content = req.body.content;
 
     if (content.length < 5) {
@@ -344,10 +393,17 @@ app.post("/edit/:uid", async (req, res) => {
         },
         {
             where: {
-                uid: req.post.uid
+                uid: uid
             }
         }
     );
+
+    // Update the request post object with the new data, for redis
+    req.post.dataValues.content_html = content_html;
+    req.post.dataValues.content_text = content;
+
+    // Update/create post in cache
+    await redis.hSet("post-" + uid, req.post.dataValues);
 
     return res.redirect("/post/" + req.post.uid);
 })
@@ -382,13 +438,16 @@ app.get("/libraries/:file", (req, res) => {
 
 
 // Error handlers
+// 404 page
 app.use((req, res) => {
-    // 404 page
     res.status(404).render("error_page.ejs", { status: 404, message: "Seems like you got lost. This page doesn't exist" });
 })
+// 5xx pages
+app.use((req, res) => {
+    res.status(500).render("error_page.ejs", { status: 500, message: "Internal server error. Thats on us." })
+})
 
-// TODO: have routers instead of one big file
-
+/// Start the app
 app.listen(8000, () => {
     console.log(`                  @@@@@@@@@@@@                  
              @@@@@@@@@@@@@@@@@@@@@@             

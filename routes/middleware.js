@@ -31,7 +31,7 @@ middleware.rateLimiter = rateLimit({
     ipv6Subnet: 56,
     handler: (req, res, next, options) => {
         // Don't affect admins and mods
-        if (req.session.user && req.ression.user.group >= 3) {
+        if (req.session.user && req.session.user.group >= 3) {
             return next();
         }
 

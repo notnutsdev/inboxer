@@ -163,6 +163,10 @@ textarea {
 	background-color: var(--pixel-bg);
 }
 
+.btn-white {
+	background-color: white;
+}
+
 .btn-danger {
 	background-color: rgb(235, 69, 69);
 }
@@ -425,6 +429,7 @@ textarea {
 /* Popover related */
 .popover_container {
 	position: absolute;
+	z-index: 9999;
 	top: 0;
 	left: 0;
 	padding: 10px;
@@ -548,6 +553,11 @@ textarea {
 
 .opacity-25 {
 	opacity: 0.25
+}
+
+/* Color utilities */
+.bg-danger {
+	background-color: rgb(235, 69, 69);
 }
 
 /* Grid utilities */
@@ -733,6 +743,11 @@ textarea#content {
 }
 
 /* User group styling */
+/* Deleted users (group -1) */
+.group--1 {
+	color: red;
+}
+
 /* Throwaway users */
 .group-0 {
 	color: #000000a3;
@@ -859,3 +874,5 @@ input[type=checkbox] {
   background-color: var(--pixel-bg);
   border-color: var(--secondary-color);
 }
+
+

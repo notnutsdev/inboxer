@@ -8,7 +8,7 @@ const User = require("../models/users");
 const Settings = require('../models/settings');
 const bcrypt = require("bcrypt");
 
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 
 const validation = require('../utils/validation');
 
@@ -151,5 +151,54 @@ router.post("/settings", async (req, res) => {
 
     return res.render("settings.ejs", { user: req.session.user, success: "Updated settings!" });
 })
+
+// Delete account
+router.all('/settings/deleteaccount', middleware.checkLogin);
+router.get('/settings/deleteaccount', (req, res) => {
+    return res.render("deleteaccount.ejs", { user: req.session.user });
+})
+router.post('/settings/deleteaccount', middleware.checkAltcha);
+router.post('/settings/deleteaccount', async (req, res) => {
+    const password = req.body.password;
+    const confirm_sentence = req.body.confirmation_phrase; // the user must type "delete account" so that deleting an account cannot happen by mistake
+    const delete_all_posts = req.body.delete_posts;
+
+    if (!password || !confirm_sentence) {
+        return res.render('deleteaccount.ejs', { error: "Please fill out all the inputs." })
+    }
+
+    if (confirm_sentence != "delete account") {
+        return res.render('deleteaccount.ejs', { error: "Please enter 'delete account' in the confirmation field if you want to proceed." })
+    }
+
+    const user = await User.findOne({
+        where: {
+            uid: req.session.user.uid
+        }
+    });
+
+    const passwords_match = bcrypt.compare(password, user.password);
+    if (!passwords_match) {
+        return res.render('deleteaccount.ejs', { error: "Invalid password." })
+    }
+
+    console.log(req.body)
+
+    // Delete user posts if the user has checked the option
+    if (delete_all_posts === "on") {
+        await Post.destroy({
+            where: {
+                user_id: req.session.user.uid
+            }
+        })
+    }
+
+    // Delete the account
+    await user.destroy(); // FIXME
+
+    req.session.destroy();
+
+    return res.render("blank.ejs", { success: "Account successfully deleted." })
+});
 
 module.exports = router;

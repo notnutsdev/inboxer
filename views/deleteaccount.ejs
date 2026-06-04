@@ -1,0 +1,41 @@
+<%# When a user is trying to delete his account %>
+<%- include("base/head", { title: "Deleting Account" }) %>
+
+<body>
+    <%- include("base/nav") %>
+
+    <%- include('base/error') %>
+
+    <div class="wrapper" style="margin-top: 30px;">
+        <div class="container">
+            <div class="pixel-container">
+                <div class="before bg-danger">
+                    <div class="text-center">
+                        <h1>Are you sure you want to delete your account?</h1>
+
+                        <p>To confirm this action, please enter your account password bellow and in the second input, type the sentence: <code>delete account</code></p>
+
+                        <form method="post">
+                            <input type="password" name="password" placeholder="Password here..."><br>
+                            <input type="text" name="confirmation_phrase" placeholder="Confirmation sentence" class="margin-10"><br>
+
+                            <input type="checkbox" name="delete_posts" id="delete_posts">
+                            <label for="delete_posts">Delete all posts</label>
+                            <img src="/img/info.png" height="13px" alt="i" class="popover" popover_content="If left unchecked, your account will be deleted but your posts will still be visible under the 'Deleted User' username.">
+
+                            <div class="wrapper margin-15"><%- include('components/altcha_widget') %></div>
+
+                            <button type="submit" class="btn" style="background-color: rgb(131, 33, 33); color: white;">Delete account</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="after"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/popover.js" type="module"></script>
+
+    <%- include("base/footer") %>
+</body>
+</html>

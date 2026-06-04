@@ -51,6 +51,8 @@ router.route("/register")
         for (i = 0; i < 10; i++) {
             password += charlist[Math.floor(Math.random() * charlist.length)];
         }
+
+        req.session.cookie.maxAge = 5 * 1000; // Make the cookies expire after 7 days at most to logout the anon user after his account expires.
     } else {
         user_group = 2;
 
@@ -59,6 +61,14 @@ router.route("/register")
 
         if (!username || !password) {
             return res.render("register.ejs", { error: "Please fill out all the form fields." });
+        }
+
+        if (3 < username.length && username.length < 20) {
+            return res.render("register.ejs", { error: "Your username must be bewteen 3 and 20 characters long." });
+        }
+
+        if (password.length > 50) {
+            return res.render("register.ejs", { error: "Password is too long." });
         }
 
         if (!validation.isValidUsername(username)) {
@@ -122,8 +132,15 @@ router.route("/login")
         return res.render("login.ejs", { error: "User not found." });
     }
 
-    if (user.group == 1 && user.creation_date + (7 * 24 * 60 * 60) <= Math.floor(Date.now()/1000)) {
-        return res.render("login.ejs", { error: "This anon account has expired. You can still create a new one." });
+    if (user.group == 1) {
+        const timestamp = Math.floor(Date.now()/1000);
+
+        if (user.creation_date + (7 * 24 * 60 * 60) <= timestamp) {
+            return res.render("login.ejs", { error: "This anon account has expired. You can still create a new one." });
+        }
+
+        // Set the right account time expiry for the cookies
+        req.session.cookie.maxAge = ((user.creation_date+(7 * 24 * 60 * 60))-timestamp)*1000;
     }
 
     // Check password hash

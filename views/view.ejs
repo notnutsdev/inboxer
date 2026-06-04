@@ -36,7 +36,7 @@
         <div id="post_data">
             <div id="post_id" class="text-center">Post ID: <span class="pixel-box"><%= post.uid %></span></div>
 
-            <div id="username" class="text-center">Posted by: <a href="<% if (author.group == 0) { %>/throwaway<% } else { %>/user/<%= author.username %><% } %>" class="pixel-box">
+            <div id="username" class="text-center">Posted by: <a href="<% if (author.group == 0) { %>/throwaway<% } else if (author.group == -1) { %><%# deleted users %>/deletedusers<% } else { %>/user/<%= author.username %><% } %>" class="pixel-box">
                 <%- include("components/username_span", { author: locals.author }) %>
             </a></div>
             

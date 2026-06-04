@@ -21,6 +21,7 @@
     "highlight.js": "^11.11.1",
     "mysql2": "^3.22.3",
     "nsfwjs": "^4.3.0",
+    "redis": "^6.0.0",
     "remark-html": "^16.0.1",
     "sanitize": "^2.1.2",
     "sequelize": "^6.37.8",
