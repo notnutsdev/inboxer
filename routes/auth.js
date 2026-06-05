@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const Settings = require('../models/settings');
 const { Op } = require("sequelize");
+const redis = require('../utils/redis');
 
 const validation = require('../utils/validation');
 
@@ -37,7 +38,7 @@ router.route("/register")
         // find a unique username for the anon user
         while (true) {
             username = "Anon_" + Math.ceil(Math.random() * 99999999).toString();
-            const user_exists = await User.findOne({ where: { username: username, group: { [Op.gt]: 0 } }}); // skip throwaway accounts
+            const user_exists = await User.findOne({ where: { username: username, group: { [Op.gt]: 0 } }}); // skip throwaway accounts and deleted users
             
             if (!user_exists) {
                 break;
@@ -52,7 +53,7 @@ router.route("/register")
             password += charlist[Math.floor(Math.random() * charlist.length)];
         }
 
-        req.session.cookie.maxAge = 5 * 1000; // Make the cookies expire after 7 days at most to logout the anon user after his account expires.
+        req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // Make the cookies expire after 7 days at most to logout the anon user after his account expires.
     } else {
         user_group = 2;
 
@@ -102,6 +103,8 @@ router.route("/register")
 
     const user_settings = await Settings.create(settings);
     req.session.user.settings = user_settings.dataValues;
+
+    await redis.set(`user-${user.uid}`, "active") // We cache if a user if active or not
 
     if (user_group == 1) {
         const account_end_date = new Date((timestamp + (7 * 24 * 60 * 60)) * 1000).toString(); // The timestamp of the end of the account (7 days later)
@@ -167,6 +170,8 @@ router.route("/login")
     if (redirect && redirect.match(/^\/[a-z-0-9-\/]*$/s)) { // make sure the user doesn't try to access something else than an internal URL
         return res.redirect(redirect);
     }
+
+    await redis.set(`user-${user.uid}`, "active") // We cache the user saying it's active (true)
 
     res.render("blank.ejs", { success: "Logged in successfully!" });
 })

@@ -10,6 +10,7 @@ const initModels = async () => {
 
     // Groups that should exist by default
     const base_groups = [
+        { id: -1, name: "Deleted Users" },
         { id: 0, name: "Throwaway" },
         { id: 1, name: "Anonymous" },
         { id: 2, name: "Regular" },

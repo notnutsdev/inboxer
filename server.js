@@ -30,6 +30,7 @@ process.loadEnvFile("./.env");
 // Routers
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const modRoutes = require('./routes/moderation.js');
 
 // Setting ejs as our view engine
 app.set("view engine", "ejs");
@@ -44,10 +45,12 @@ app.use(session({
     saveUninitialized: false
 }));
 app.use(middleware.rateLimiter);
+app.use(middleware.checkActiveUser);
 
 // Registering routers
 app.use('/auth', authRoutes);
 app.use("/", userRoutes);
+app.use("/moderation", modRoutes);
 
 // Locals/Global variables
 app.locals = config.locals;
@@ -171,7 +174,7 @@ app.get('/post/:uid', async (req, res) => {
             },
             include: [{
                 model: User,
-                required: true
+                required: false
             }]
         });
 

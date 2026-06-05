@@ -577,6 +577,10 @@ textarea {
 	}
 }
 
+.grid-3 .pixel-container .before {
+	height: 90%;
+}
+
 /* End utility classes */
 
 /* Text editor */

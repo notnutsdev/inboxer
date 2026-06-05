@@ -6,6 +6,7 @@ const middleware = require('./middleware');
 const Post = require("../models/posts");
 const User = require("../models/users");
 const Settings = require('../models/settings');
+const dbutils = require("../utils/db");
 const bcrypt = require("bcrypt");
 
 const { Op } = require("sequelize");
@@ -182,19 +183,7 @@ router.post('/settings/deleteaccount', async (req, res) => {
         return res.render('deleteaccount.ejs', { error: "Invalid password." })
     }
 
-    console.log(req.body)
-
-    // Delete user posts if the user has checked the option
-    if (delete_all_posts === "on") {
-        await Post.destroy({
-            where: {
-                user_id: req.session.user.uid
-            }
-        })
-    }
-
-    // Delete the account
-    await user.destroy(); // FIXME
+    await dbutils.deleteUser(req.session.user.uid, (delete_all_posts === "on") ? true : false); // Delete the actual user and his posts if asked for
 
     req.session.destroy();
 
