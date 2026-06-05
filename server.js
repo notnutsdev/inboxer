@@ -27,6 +27,8 @@ const redis = require("./utils/redis.js");
 // Loading environment variables
 process.loadEnvFile("./.env");
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 // Routers
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
@@ -444,10 +446,10 @@ app.get("/libraries/:file", (req, res) => {
 // 404 page
 app.use((req, res) => {
     res.status(404).render("error_page.ejs", { status: 404, message: "Seems like you got lost. This page doesn't exist" });
-})
-// 5xx pages
-app.use((req, res) => {
-    res.status(500).render("error_page.ejs", { status: 500, message: "Internal server error. Thats on us." })
+
+    if (isProduction) {
+        res.status(500).render("error_page.ejs", { status: 500, message: "Internal server error. Thats on us." })
+    }
 })
 
 /// Start the app
