@@ -42,6 +42,11 @@ const initModels = async () => {
 
         if (!user) {
             await User.create(value);
+            await Settings.create({
+                user_id: value.uid,
+                theme_color: "random",
+                nsfw_check: true
+            });
         }
     });
 

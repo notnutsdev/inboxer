@@ -19,7 +19,7 @@
             <div class="opacity-50">Joined <%= creation_date.toLocaleString('en-EN', {month: "long", day: "numeric", year: "numeric"}) %></div>
 
             <%# Staff actions %>
-            <% if (user.group >= 3) { %>
+            <% if (locals.user.group >= 3) { %>
                 <a href="/moderation/ban?uid=<%= locals.profile.uid %>" class="btn btn-danger"><img title="Ban User" src="/img/ban.png" height="17px"></a>
             <% } %>
         </div>
