@@ -37,6 +37,11 @@ const modRoutes = require('./routes/moderation.js');
 // Setting ejs as our view engine
 app.set("view engine", "ejs");
 
+// For proxied DNS
+if (process.env.PROXY_NUMBER >= 1) {
+    app.set('trust proxy', process.env.PROXY_NUMBER);
+}
+
 // Express middleware
 app.use(express.json());
 app.use(express.urlencoded());

@@ -1,5 +1,6 @@
 {
     "site_name": "Inboxer",
+    "base_url": "https://inboxer.lol",
 
     "urls": {
         "formatting": "e9618187-0aba-496d-984b-2f669b4e94c9",

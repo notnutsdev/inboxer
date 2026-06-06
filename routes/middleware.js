@@ -1,5 +1,6 @@
 const { rateLimit } = require("express-rate-limit");
 const redis = require("../utils/redis");
+const config = require("../config.json");
 
 ///// Reused middlewares
 const middleware = {};
@@ -73,7 +74,7 @@ middleware.checkAltcha = async (req, res, next) => {
 
     if (!payload) return res.render("blank.ejs", { error: "Please click the captcha button." });
 
-    const result = await fetch(req.protocol + "://" + req.get('host') + "/altcha/verify", {
+    const result = await fetch(config.base_url + "/altcha/verify", {
         body: JSON.stringify({
         altcha: payload, // Base64-encoded ALTCHA payload
         }),
