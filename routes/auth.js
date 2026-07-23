@@ -64,7 +64,7 @@ router.route("/register")
             return res.render("register.ejs", { error: "Please fill out all the form fields." });
         }
 
-        if (3 < username.length && username.length < 20) {
+        if (3 < username.length && username.length > 20) {
             return res.render("register.ejs", { error: "Your username must be bewteen 3 and 20 characters long." });
         }
 
