@@ -57,7 +57,7 @@ router.route("/register")
     } else {
         user_group = 2;
 
-        username = req.body.username;
+        username = validator.escape(String(req.body.username));
         password = req.body.password;
 
         if (!username || !password) {

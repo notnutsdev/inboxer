@@ -108,7 +108,7 @@ app.post('/create', (req, res, next) => { // to show captchas only to throwaway 
 app.post('/create', middleware.checkAltcha) // check the actual captcha
 app.post("/create", async (req, res) => {
     let user_id;
-    let content = req.body.content;
+    let content = validator.escape(String(req.body.content));
 
     // Guards
     if (!content) {
